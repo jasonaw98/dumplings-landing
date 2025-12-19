@@ -16,3 +16,4 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+<img width="1828" height="925" alt="antigrav" src="https://github.com/user-attachments/assets/fb312cf0-fcf7-49ab-ac4e-478568077c79" />
