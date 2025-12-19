@@ -10,7 +10,7 @@ const menuItems = [
     name: "Classic Steamed Bao",
     description: "Fluffy white buns filled with juicy pork and aromatics.",
     price: "RM19.50",
-    image: "/dumpling-1.png",
+    image: "/dumpling-1-nobg.png",
     color: "bg-blue-50",
   },
   {
@@ -18,7 +18,7 @@ const menuItems = [
     name: "Crispy Gyoza Friends",
     description: "Pan-fried to golden perfection with a savory veggie mix.",
     price: "RM19.50",
-    image: "/dumpling-2.png",
+    image: "/dumpling-2-nobg.png",
     color: "bg-yellow-50",
   },
   {
