@@ -27,19 +27,23 @@ export function Hero() {
             joy. Experience the cutest dumplings in town!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white rounded-full text-lg h-14 px-8"
-            >
-              View Menu
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-full text-lg h-14 px-8 border-orange-200 hover:bg-orange-50 text-orange-700"
-            >
-              Our Locations <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <a href="#menu">
+              <Button
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white rounded-full text-lg h-14 px-8"
+              >
+                View Menu
+              </Button>
+            </a>
+            <a href="#locations">
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full bg-orange-200 text-lg h-14 px-8 border-orange-200 hover:bg-orange-50 text-orange-700"
+              >
+                Our Locations <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </a>
           </div>
         </motion.div>
 
@@ -53,7 +57,7 @@ export function Hero() {
             src="/hero-dumplings.png"
             alt="Cute dumplings in a steamer"
             fill
-            className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+            className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 rounded-3xl"
             priority
           />
         </motion.div>

@@ -8,7 +8,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Happy Dumplings | Not Your Grandma's Bao",
+  title: "Dumpling Bois | Not Your Grandma's Bao",
   description: "Modern, cute, and delicious dumplings crafted with love.",
 };
 
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body className={`${outfit.className} antialiased`}>{children}</body>
     </html>
   );
