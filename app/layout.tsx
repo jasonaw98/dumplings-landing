@@ -19,6 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <script defer src="https://umami-jason.vercel.app/script.js" data-website-id="0e4ed64e-66bc-4488-be07-70d07b4e7b2c"></script>
       <body className={`${outfit.className} antialiased`}>{children}</body>
     </html>
   );
