@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 
 export function Hero() {
   return (
-    <section className="min-h-screen pt-24 pb-12 px-4 flex flex-col items-center justify-center bg-orange-50 relative overflow-hidden">
+    <section className="min-h-screen pt-24 pb-12 px-4 md:px-30 flex flex-col items-center justify-center bg-orange-50 relative overflow-hidden">
       <div className="container mx-auto grid md:grid-cols-2 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}

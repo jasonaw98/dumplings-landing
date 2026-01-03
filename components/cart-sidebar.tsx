@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "./ui/button";
 
@@ -140,9 +141,11 @@ export function CartSidebar() {
                     RM {totalPrice.toFixed(2)}
                   </span>
                 </div>
-                <Button className="w-full h-12 text-lg bg-gray-900 hover:bg-orange-500 text-white rounded-xl transition-colors">
-                  Checkout Now
-                </Button>
+                <Link href="/checkout" onClick={closeCart}>
+                  <Button className="w-full h-12 text-lg bg-gray-900 hover:bg-orange-500 text-white rounded-xl transition-colors">
+                    Checkout Now
+                  </Button>
+                </Link>
               </div>
             )}
           </motion.div>
