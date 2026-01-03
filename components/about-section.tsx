@@ -15,9 +15,9 @@ export function AboutSection() {
             viewport={{ once: true }}
             className="md:w-1/2"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl shadow-2xl overflow-hidden">
               <Image
-                src="/hero-dumplings.png" // Reusing hero image for now, but cropped/styled differently
+                src="/plated.jpg"
                 alt="Chefs making dumplings"
                 width={600}
                 height={400}

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+import { CartProvider } from "@/lib/cart-context";
+import { CartSidebar } from "@/components/cart-sidebar";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -12,6 +15,7 @@ export const metadata: Metadata = {
   description: "Modern, cute, and delicious dumplings crafted with love.",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,14 +23,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <head>
-        <script
-          defer
-          src="https://umami-jason.vercel.app/script.js"
-          data-website-id="0e4ed64e-66bc-4488-be07-70d07b4e7b2c"
-        ></script>
-      </head>
-      <body className={`${outfit.className} antialiased`}>{children}</body>
+      <Script
+        defer
+        src="https://umami-jason.vercel.app/script.js"
+        data-website-id="0e4ed64e-66bc-4488-be07-70d07b4e7b2c"
+      />
+      <body className={`${outfit.className} antialiased`}>
+        <CartProvider>
+          {children}
+          <CartSidebar />
+        </CartProvider>
+      </body>
     </html>
   );
 }

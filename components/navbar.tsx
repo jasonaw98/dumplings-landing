@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import { Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useCart } from "@/lib/cart-context";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { toggleCart, totalItems } = useCart();
 
   return (
     <motion.nav
@@ -55,11 +57,17 @@ export function Navbar() {
           >
             <Menu className="h-6 w-6" />
           </Button>
-          <Link href="https://api.whatsapp.com/send/?phone=600108227137&text&type=phone_number" target="_blank">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-full">
-              <ShoppingBag className="mr-2 h-4 w-4" /> Order Now
-            </Button>
-          </Link>
+          <Button
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full relative"
+            onClick={toggleCart}
+          >
+            <ShoppingBag className="mr-2 h-4 w-4" />Cart
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                {totalItems}
+              </span>
+            )}
+          </Button>
         </div>
       </div>
 

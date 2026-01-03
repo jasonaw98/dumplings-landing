@@ -8,9 +8,10 @@ const dumplings = [
   { src: "/dumpling-1-nobg.png", size: 100, x: "10%", delay: 0 },
   { src: "/dumpling-2-nobg.png", size: 100, x: "85%", delay: 0.5 },
   { src: "/dumpling-1-nobg.png", size: 100, x: "15%", delay: 1.2 },
-  { src: "/dumpling-2-nobg.png", size: 100, x: "80%", delay: 2 },
+  { src: "/dumpling-2-nobg.png", size: 100, x: "88%", delay: 2 },
   { src: "/dumpling-1-nobg.png", size: 100, x: "15%", delay: 2.8 },
   { src: "/dumpling-2-nobg.png", size: 100, x: "90%", delay: 3.5 },
+  { src: "/dumpling-1-nobg.png", size: 100, x: "15%", delay: 4.5 },
 ];
 
 export function FloatingDumplings() {

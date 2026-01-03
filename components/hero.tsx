@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 export function Hero() {
   return (
     <section className="min-h-screen pt-24 pb-12 px-4 flex flex-col items-center justify-center bg-orange-50 relative overflow-hidden">
-      <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto grid md:grid-cols-2 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -54,17 +54,17 @@ export function Hero() {
           className="relative h-[500px] w-full"
         >
           <Image
-            src="/hero-dumplings.png"
+            src="/full_steam.png"
             alt="Cute dumplings in a steamer"
             fill
-            className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 rounded-3xl"
+            className="drop-shadow-2xl hover:scale-115 transition-transform duration-500 rounded-3xl scale-105 object-contain"
             priority
           />
         </motion.div>
       </div>
 
       {/* Decorative background elements */}
-      <div className="absolute top-1/4 left-10 w-64 h-64 bg-yellow-200/30 rounded-full blur-3xl z-0" />
+      <div className="absolute top-1/4 left-10 w-64 h-64 bg-yellow-200/40 rounded-full blur-3xl z-0" />
       <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-orange-200/30 rounded-full blur-3xl z-0" />
     </section>
   );
