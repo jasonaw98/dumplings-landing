@@ -1,36 +1,57 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useCart } from "@/lib/cart-context";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function CheckoutForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const {items, totalPrice} = useCart();
-  const simpleItems = items.map(item => `${item.name} x ${item.quantity}`);
+  const { items, totalPrice } = useCart();
+  const simpleItems = items.map((item) => `${item.name} x ${item.quantity}`);
+  const router = useRouter();
 
   async function submitReceipt(formData: FormData) {
-    const res = await fetch("/api/receipt/telegram", {
-      method: "POST",
-      body: formData,
-    });
+    // Save order details to sessionStorage before redirecting
+    const orderDetails = {
+      items: items,
+      totalPrice: totalPrice,
+      firstName: formData.get("firstName")?.toString() || "",
+      lastName: formData.get("lastName")?.toString() || "",
+      email: formData.get("email")?.toString() || "",
+      phone: formData.get("phone")?.toString() || "",
+      address: formData.get("address")?.toString() || "",
+      city: formData.get("city")?.toString() || "",
+      zip: formData.get("zip")?.toString() || "",
+      orderDate: new Date().toISOString(),
+    };
+    sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
-    if (!res.ok) {
-      throw new Error("Upload failed");
-    }
+    toast.promise(
+      fetch("/api/receipt/telegram", {
+        method: "POST",
+        body: formData,
+      }).then(async (res) => {
+        if (!res.ok) {
+          // Try to read error message from response if possible
+          let message = "Upload failed";
+          try {
+            const data = await res.json();
+            if (data?.error) message = data.error;
+          } catch (e) {}
+          throw new Error(message);
+        }
+        router.push("/checkout/success");
+        return res;
+      }),
+      {
+        loading: "Sending Order...",
+        success: "Order sent successfully",
+        error: (err) => err.message || "Order failed",
+      }
+    );
   }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate processing
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Order placed successfully! (This is a demo)");
-    }, 2000);
-  };
 
   return (
     <form
@@ -53,7 +74,6 @@ export function CheckoutForm() {
               name="email"
               placeholder="hello@dumplingbois.com"
               required
-              className="ring-transparent border-neutral-300"
             />
           </div>
           <div className="grid gap-2">
@@ -64,7 +84,6 @@ export function CheckoutForm() {
               name="phone"
               placeholder="+60 12-345 6789"
               required
-              className="ring-transparent border-neutral-300"
             />
           </div>
         </div>
@@ -77,15 +96,18 @@ export function CheckoutForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <input type="hidden" name="totalPrice" value={totalPrice} />
-              <input type="hidden" name="items" value={simpleItems.join("\n")} />
+              <input
+                type="hidden"
+                name="items"
+                value={simpleItems.join("\n")}
+              />
               <Label htmlFor="firstName">First Name</Label>
               <Input
                 id="firstName"
                 name="firstName"
-                placeholder="Jason"
+                placeholder="John"
                 required
                 type="text"
-                className="ring-transparent border-neutral-300"
               />
             </div>
             <div className="grid gap-2">
@@ -93,10 +115,9 @@ export function CheckoutForm() {
               <Input
                 id="lastName"
                 name="lastName"
-                placeholder="Tan"
+                placeholder="Doe"
                 required
                 type="text"
-                className="ring-transparent border-neutral-300"
               />
             </div>
           </div>
@@ -107,7 +128,6 @@ export function CheckoutForm() {
               name="address"
               placeholder="123 Dumpling Lane"
               required
-              className="ring-transparent border-neutral-300"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -118,18 +138,11 @@ export function CheckoutForm() {
                 name="city"
                 placeholder="Kuala Lumpur"
                 required
-                className="ring-transparent border-neutral-300"
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="zip">Postcode</Label>
-              <Input
-                id="zip"
-                name="zip"
-                placeholder="50000"
-                required
-                className="ring-transparent border-neutral-300"
-              />
+              <Input id="zip" name="zip" placeholder="50000" required />
             </div>
           </div>
         </div>
@@ -151,7 +164,7 @@ export function CheckoutForm() {
             name="receipt"
             accept="image/*,.pdf"
             required
-            className="ring-transparent cursor-pointer border-neutral-300 text-neutral-600 file:mr-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-600 hover:file:bg-orange-100 transition-colors"
+            className=" cursor-pointer text-neutral-600 file:mr-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:text-orange-600 transition-colors"
           />
           <p className="text-xs text-neutral-500">
             Please upload your payment receipt (Image or PDF)
@@ -162,9 +175,8 @@ export function CheckoutForm() {
       <Button
         type="submit"
         className="w-full h-12 text-lg bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
-        disabled={isLoading}
       >
-        {isLoading ? "Processing..." : "Place Order"}
+        Place Order
       </Button>
     </form>
   );

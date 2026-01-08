@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import { CartProvider } from "@/lib/cart-context";
 import { CartSidebar } from "@/components/cart-sidebar";
+import { Toaster } from "@/components/ui/sonner"
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={`${outfit.className} antialiased`}>
         <CartProvider>
           {children}
+          <Toaster position="top-center" richColors/>
           <CartSidebar />
         </CartProvider>
       </body>
