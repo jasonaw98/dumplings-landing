@@ -54,7 +54,7 @@ export default function CheckoutSuccessPage() {
   const orderNumber = `#${Date.now().toString().slice(-8)}`;
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-orange-50 to-white pt-24 pb-12 px-4">
+    <div className="min-h-screen bg-linear-to-b from-orange-50 to-white pt-12 pb-12 px-4">
       <div className="container mx-auto max-w-4xl">
         {/* Success Header */}
         <motion.div
@@ -186,18 +186,14 @@ export default function CheckoutSuccessPage() {
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-orange-200">1.</span>
-                  <span>We've received your order and payment receipt</span>
+                  <span>We've received your order and payment</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-orange-200">2.</span>
-                  <span>Our team will verify your payment</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-orange-200">3.</span>
                   <span>You'll receive a confirmation message soon</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-200">4.</span>
+                  <span className="text-orange-200">3.</span>
                   <span>Your dumplings will be prepared fresh!</span>
                 </li>
               </ul>
@@ -219,11 +215,10 @@ export default function CheckoutSuccessPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-gray-700">
                   <Phone className="w-4 h-4 text-orange-600" />
-                  <span>Call us for support</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Mail className="w-4 h-4 text-orange-600" />
-                  <span>Message us anytime</span>
+                  <a href="https://api.whatsapp.com/send/?phone=600108227137&text&type=phone_number"
+                    target="_blank">
+                    <span className="hover:text-orange-500 transition-colors underline">WhatsApp us for support</span>
+                  </a>
                 </div>
               </div>
             </motion.div>

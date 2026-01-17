@@ -13,6 +13,7 @@ const bestsellers = [
     price: 25.5,
     image: "/fillings/shrimp.png",
     color: "bg-blue-50",
+    popular: true,
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ const bestsellers = [
     price: 18.5,
     image: "/fillings/cabbage.png",
     color: "bg-gray-50",
+    popular: false,
   },
   {
     id: 3,
@@ -29,25 +31,25 @@ const bestsellers = [
     price: 23.5,
     image: "/fillings/mushroom.png",
     color: "bg-red-50",
+    popular: true,
   },
-];
-
-const others = [
   {
-    id: 1,
+    id: 4,
     name: "Leek",
     description: "Carrot skin wrap with leek with chicken fillings",
     price: 18.5,
     image: "/fillings/leek.png",
-    color: "bg-blue-50",
+    color: "bg-purple-50",
+    popular: false,
   },
   {
-    id: 2,
+    id: 5,
     name: "Corn",
     description: "Pumpkin skin wrap with corn with chicken fillings",
     price: 18.5,
     image: "/fillings/corn.png",
-    color: "bg-red-50",
+    color: "bg-amber-50",
+    popular: false,
   },
 ];
 
@@ -59,7 +61,7 @@ export function MenuSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Our Bestsellers
+            Our Varieties
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             These little guys are popular for a reason. Try the crowd favorites!
@@ -67,7 +69,7 @@ export function MenuSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {bestsellers.map((item, index) => (
+          {bestsellers.slice(0, 3).map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 50 }}
@@ -77,6 +79,11 @@ export function MenuSection() {
               className={`rounded-3xl p-8 ${item.color} group hover:shadow-xl transition-all duration-300`}
             >
               <div className="relative h-48 w-full mb-8 group-hover:scale-110 transition-transform duration-300">
+                {item.popular && (
+                  <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-lg">
+                    Popular
+                  </span>
+                )}
                 <Image
                   src={item.image}
                   alt={item.name}
@@ -110,19 +117,10 @@ export function MenuSection() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div>Ï
 
-         <div className="text-center my-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Other Fillings
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Try other fillings that we have!
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:flex justify-center gap-8">
-          {others.map((item, index) => (
+        <div className="grid grid-cols-1 md:flex justify-center gap-8 mt-8">
+          {bestsellers.slice(3).map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 50 }}

@@ -29,22 +29,32 @@ export function CheckoutForm() {
     sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
     toast.promise(
-      fetch("/api/receipt/telegram", {
-        method: "POST",
-        body: formData,
-      }).then(async (res) => {
-        if (!res.ok) {
-          // Try to read error message from response if possible
-          let message = "Upload failed";
-          try {
-            const data = await res.json();
-            if (data?.error) message = data.error;
-          } catch (e) {}
-          throw new Error(message);
-        }
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve({ success: true }),
+          });
+        }, 3000);
         router.push("/checkout/success");
-        return res;
       }),
+      // fetch("/api/receipt/telegram", {
+      //   method: "POST",
+      //   body: formData,
+      // }).then(async (res) => {
+      //   if (!res.ok) {
+      //     // Try to read error message from response if possible
+      //     let message = "Upload failed";
+      //     try {
+      //       const data = await res.json();
+      //       if (data?.error) message = data.error;
+      //     } catch (e) {}
+      //     throw new Error(message);
+      //   }
+      //   router.push("/checkout/success");
+      //   return res;
+      // }),
       {
         loading: "Sending Order...",
         success: "Order sent successfully",
@@ -153,22 +163,6 @@ export function CheckoutForm() {
         <h3 className="text-xl font-bold text-gray-900">Payment</h3>
         <div className="p-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm">
           ⚠️ Payment integration coming soon. You won't be charged yet.
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="receipt" className="text-neutral-600">
-            Upload Receipt
-          </Label>
-          <Input
-            id="receipt"
-            type="file"
-            name="receipt"
-            accept="image/*,.pdf"
-            required
-            className=" cursor-pointer text-neutral-600 file:mr-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:text-orange-600 transition-colors"
-          />
-          <p className="text-xs text-neutral-500">
-            Please upload your payment receipt (Image or PDF)
-          </p>
         </div>
       </div>
 

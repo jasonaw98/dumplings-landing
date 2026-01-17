@@ -23,7 +23,7 @@ export function Navbar() {
           href="/"
           className="text-2xl font-bold text-orange-600 flex items-center gap-2"
         >
-          <span>🥟</span> Dumpling Bois
+          <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" /> Dumpling Bois
         </Link>
 
         {/* Desktop Menu */}
