@@ -1,235 +1,295 @@
 import {
-    Body,
-    Column,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Img,
-    Link,
-    pixelBasedPreset,
-    Preview,
-    Row,
-    Section,
-    Tailwind,
-    Text,
-  } from '@react-email/components';
-  
-  const baseUrl = process.env.VERCEL_URL
+  Body,
+  Column,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Img,
+  Link,
+  pixelBasedPreset,
+  Preview,
+  Row,
+  Section,
+  Tailwind,
+  Text,
+} from "@react-email/components";
+
+export type ConfirmationEmailCartItem = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+};
+
+export type ConfirmationEmailProps = {
+  orderNumber?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  zip?: string;
+  orderDate?: string;
+  items?: any[];
+  totalPrice?: number;
+  baseUrl?: string;
+};
+
+const defaultBaseUrl =
+  typeof process !== "undefined" && process.env?.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : 'https://react-email-demo-jefuq217q-resend.vercel.app';
-  
-  export const ConfirmationEmail = () => (
+    : "https://dumplingbois.com";
+
+export const ConfirmationEmail = ({
+  orderNumber = `#${Date.now().toString().slice(-8)}`,
+  firstName = "there",
+  lastName = "",
+  email = "customer@example.com",
+  phone = "",
+  address = "123 Dumpling Lane",
+  city = "Kuala Lumpur",
+  zip = "50000",
+  orderDate = new Date().toLocaleDateString("en-MY", {
+    dateStyle: "long",
+  }),
+  items = [
+    {
+      id: 1,
+      name: "Shrimp",
+      price: 25.5,
+      image: "/fillings/shrimp.png",
+      quantity: 2,
+    },
+    {
+      id: 2,
+      name: "Mushroom",
+      price: 23.5,
+      image: "/fillings/mushroom.png",
+      quantity: 1,
+    },
+  ],
+  totalPrice = 74.5,
+  baseUrl = defaultBaseUrl,
+}: ConfirmationEmailProps) => {
+  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+  const displayTotal = totalPrice.toFixed(2);
+
+  return (
     <Html>
       <Head />
-      <Tailwind config={{
+      <Tailwind
+        config={{
           presets: [pixelBasedPreset],
           theme: {
             fontFamily: {
-                    nike: ['-apple-system',
-                        'BlinkMacSystemFont',
-                        '"Segoe UI"',
-                        'Roboto',
-                        'Oxygen-Sans',
-                        'Ubuntu',
-                        'Cantarell',
-                        '"Helvetica Neue"',
-                        'sans-serif',],
+              outfit: [
+                "Outfit",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                '"Segoe UI"',
+                "Roboto",
+                "sans-serif",
+              ],
             },
             extend: {
               colors: {
-                brand: "#007291",
+                orange: {
+                  50: "#fff7ed",
+                  100: "#ffedd5",
+                  500: "#f97316",
+                  600: "#ea580c",
+                },
               },
             },
           },
-        }}>
-        <Body className="bg-white font-nike">
+        }}
+      >
+        <Body className="bg-[#f5f5f5] font-outfit">
           <Preview>
-            Get your order summary, estimated delivery date and more
+            Your Dumpling Bois order is confirmed. Order {orderNumber} – thank
+            you, {firstName}!
           </Preview>
-          <Container className="my-[10px] mx-auto w-[600px] max-w-full border border-[#E5E5E5] bg-orange-50">
-            <Section className="py-[22px] px-10 bg-[#F7F7F7]">
+          <Container className="my-[20px] mx-auto w-[600px] max-w-full rounded-2xl overflow-hidden border border-[#ffedd5] bg-[#fff7ed]">
+            {/* Header */}
+            <Section className="py-8 px-10 text-center border-b border-[#ffedd5] bg-white">
+              <Img
+                src={`${baseUrl}/logo.png`}
+                width="48"
+                height="48"
+                alt="Dumpling Bois"
+                className="mx-auto mb-4"
+              />
+              <Text className="m-0 text-xs font-semibold text-[#ea580c] uppercase tracking-wider">
+                ✨ Not Your Grandma&apos;s Dumplings
+              </Text>
+              <Heading className="m-0 mt-2 text-[28px] leading-tight font-bold text-[#111827]">
+                Order Confirmed! 🎉
+              </Heading>
+              <Text className="m-0 mt-3 text-[15px] text-[#4b5563]">
+                Thank you for your order, {firstName}! We&apos;ve received your
+                details and payment receipt.
+              </Text>
+              <Text className="m-0 mt-2 text-[14px] font-semibold text-[#6b7280]">
+                Order {orderNumber}
+              </Text>
+            </Section>
+
+            {/* Order summary */}
+            <Section className="py-6 px-10">
+              <Text className="m-0 mb-4 text-base font-bold text-[#111827]">
+                Order Summary
+              </Text>
+              {items.map((item) => (
+                <Row key={item.id} className="mb-4">
+                  <Column className="align-top" width="80">
+                    <Img
+                      src={
+                        item.image.startsWith("http")
+                          ? item.image
+                          : `${baseUrl}${item.image}`
+                      }
+                      alt={item.name}
+                      width="72"
+                      height="72"
+                      className="rounded-lg bg-white border border-[#ffedd5]"
+                    />
+                  </Column>
+                  <Column className="pl-4 align-top">
+                    <Text className="m-0 text-[15px] font-semibold text-[#111827]">
+                      {item.name}
+                    </Text>
+                    <Text className="m-0 text-[14px] text-[#6b7280]">
+                      Qty: {item.quantity} × RM {item.price.toFixed(2)}
+                    </Text>
+                    <Text className="m-0 mt-1 text-[14px] font-semibold text-[#ea580c]">
+                      RM {(item.price * item.quantity).toFixed(2)}
+                    </Text>
+                  </Column>
+                </Row>
+              ))}
+              <Hr className="border-[#ffedd5] my-4" />
               <Row>
                 <Column>
-                                <Text className="m-0 text-[14px] leading-loose font-bold">
-                    Tracking Number
-                  </Text>
-                  <Text className="mt-3 mb-0 font-medium text-[14px] leading-[1.4] text-[#6F6F6F]">
-                    1ZV218970300071628
+                  <Text className="m-0 text-[15px] font-bold text-[#111827]">
+                    Total
                   </Text>
                 </Column>
                 <Column align="right">
-                  <Link className="border border-solid border-[#929292] text-[16px] no-underline py-[10px] px-0 w-[220px] block text-center font-medium text-black">
-                    Track Package
-                  </Link>
+                  <Text className="m-0 text-[20px] font-bold text-[#ea580c]">
+                    RM {displayTotal}
+                  </Text>
                 </Column>
               </Row>
             </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="py-10 px-[74px] text-center">
-              <Img
-                src={`${baseUrl}/static/nike-logo.png`}
-                width="66"
-                height="22"
-                alt="Nike"
-                className="mx-auto"
-              />
-              <Heading className="text-[32px] leading-[1.3] font-bold text-center -tracking-[1px]">
-                It's On Its Way.
-              </Heading>
-                        <Text className="m-0 text-[14px] leading-loose text-[#747474] font-medium">
-                Your order is on its way. Use the link above to track its
-                progress.
+
+            <Hr className="border-[#ffedd5] m-0" />
+
+            {/* Delivery info */}
+            <Section className="py-6 px-10">
+              <Text className="m-0 mb-2 text-base font-bold text-[#111827]">
+                Delivery information
               </Text>
-                        <Text className="m-0 text-[14px] leading-loose text-[#747474] font-medium mt-6">
-                Your freshly made dumplings are ready to be delivered to you soon.
-              </Text>
-            </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="py-[22px] px-10">
-                        <Text className="m-0 text-[15px] leading-loose font-bold">
-                Shipping to: Alan Turing
-              </Text>
-                        <Text className="m-0 text-[14px] leading-loose text-[#747474] font-medium">
-                2125 Chestnut St, San Francisco, CA 94123
-              </Text>
-            </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="py-10 px-10">
               <Row>
-                <Column>
-                  <Img
-                    src={`${baseUrl}/static/nike-product.png`}
-                    alt="Brazil 2022/23 Stadium Away Women's Nike Dri-FIT Soccer Jersey"
-                    className="float-left"
-                    width="260px"
-                  />
-                </Column>
-                <Column className="align-top pl-3">
-                  <Text className="m-0 text-[14px] leading-loose font-medium">
-                    Brazil 2022/23 Stadium Away Women's Nike Dri-FIT Soccer Jersey
+                <Column width="50%">
+                  <Text className="m-0 text-[14px] font-semibold text-[#374151]">
+                    {fullName}
                   </Text>
-                  <Text className="m-0 text-[14px] leading-loose text-[#747474] font-medium">
-                    Size L (12–14)
+                  {phone ? (
+                    <Text className="m-0 text-[14px] text-[#6b7280]">
+                      {phone}
+                    </Text>
+                  ) : null}
+                  <Text className="m-0 text-[14px] text-[#6b7280]">{email}</Text>
+                </Column>
+                <Column>
+                  <Text className="m-0 text-[14px] text-[#6b7280]">
+                    {address}
+                  </Text>
+                  <Text className="m-0 text-[14px] text-[#6b7280]">
+                    {city}, {zip}
                   </Text>
                 </Column>
               </Row>
             </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="py-[22px] px-10">
-              <Row className="inline-flex mb-10">
-                <Column className="w-[170px]">
-                  <Text className="m-0 text-[14px] leading-loose font-bold">
-                    Order Number
+
+            <Hr className="border-[#ffedd5] m-0" />
+
+            {/* Order details */}
+            <Section className="py-6 px-10">
+              <Row>
+                <Column className="w-[50%]">
+                  <Text className="m-0 text-[13px] font-bold text-[#6b7280] uppercase tracking-wide">
+                    Order number
                   </Text>
-                  <Text className="mt-3 mb-0 font-medium text-[14px] leading-[1.4] text-[#6F6F6F]">
-                    C0106373851
+                  <Text className="m-0 mt-1 text-[14px] font-semibold text-[#111827]">
+                    {orderNumber}
                   </Text>
                 </Column>
                 <Column>
-                  <Text className="m-0 text-[14px] leading-loose font-bold">
-                    Order Date
+                  <Text className="m-0 text-[13px] font-bold text-[#6b7280] uppercase tracking-wide">
+                    Order date
                   </Text>
-                  <Text className="mt-3 mb-0 font-medium text-[14px] leading-[1.4] text-[#6F6F6F]">
-                    Sep 22, 2022
-                  </Text>
-                </Column>
-              </Row>
-              <Row>
-                <Column align="center">
-                  <Link className="border border-[#929292] no-underline py-[10px] px-0 w-[220px] text-[16px] block text-center font-medium text-black">
-                    Order Status
-                  </Link>
-                </Column>
-              </Row>
-            </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-  
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="px-5 pt-5 bg-[#F7F7F7]">
-              <Row>
-                <Text className="px-5 font-bold">Get Help</Text>
-              </Row>
-              <Row className="py-[22px] px-5">
-                <Column className="w-1/3" colSpan={1}>
-                  <Link
-                    href="https://www.nike.com/"
-                    className="text-[13.5px] mt-0 font-medium text-black"
-                  >
-                    Shipping Status
-                  </Link>
-                </Column>
-                <Column className="w-1/3" colSpan={1}>
-                  <Link
-                    href="https://www.nike.com/"
-                    className="text-[13.5px] mt-0 font-medium text-black"
-                  >
-                    Shipping & Delivery
-                  </Link>
-                </Column>
-                <Column className="w-1/3" colSpan={1}>
-                  <Link
-                    href="https://www.nike.com/"
-                    className="text-[13.5px] mt-0 font-medium text-black"
-                  >
-                    Returns & Exchanges
-                  </Link>
-                </Column>
-              </Row>
-              <Hr className="border-[#E5E5E5] m-0" />
-              <Row className="px-5 pt-8 pb-[22px]">
-                <Column>
-                  <Row>
-                    <Column className="w-4">
-                      <Img
-                        src={`${baseUrl}/static/nike-phone.png`}
-                        alt="Nike Phone"
-                        width="16px"
-                        height="26px"
-                        className="pr-[14px]"
-                      />
-                    </Column>
-                    <Column>
-                      <Text className="text-[13.5px] mt-0 font-medium text-black mb-0">
-                        1-800-806-6453
-                      </Text>
-                    </Column>
-                  </Row>
-                </Column>
-                <Column>
-                  <Text className="text-[13.5px] mt-0 font-medium text-black mb-0">
-                    4 am - 11 pm PT
+                  <Text className="m-0 mt-1 text-[14px] font-semibold text-[#111827]">
+                    {orderDate}
                   </Text>
                 </Column>
               </Row>
             </Section>
-            <Hr className="border-[#E5E5E5] m-0" />
-            <Section className="py-[22px]">
-              <Row>
-                <Text className="text-[32px] leading-[1.3] font-bold text-center -tracking-[1px]">
-                  Dumplingbois.com
-                </Text>
-              </Row>
+
+            {/* What's next */}
+            <Section className="py-6 px-10 bg-[#ea580c]">
+              <Text className="m-0 text-base font-bold text-white">
+                What&apos;s next?
+              </Text>
+              <Text className="m-0 mt-2 text-[14px] text-white/95 leading-relaxed">
+                We&apos;ve received your order and receipt. Our team will verify
+                your payment and get in touch if needed. Your dumplings will be
+                prepared fresh—we&apos;ll see you soon!
+              </Text>
             </Section>
-            <Hr className="border-[#E5E5E5] m-0 mt-3" />
-            <Section className="py-[22px]">
-              <Row className="w-[166px] mx-auto">
-                  <Text className="m-0 text-[#AFAFAF] text-[13px] text-center">
-                    Privacy Policy
-                  </Text>
-              </Row>
-              <Row>
-                <Text className="m-0 text-[#AFAFAF] text-[13px] text-center py-[30px]">
-                  Please contact us if you have any questions. Or reply to this email.
-                </Text>
-              </Row>
+
+            <Hr className="border-[#ffedd5] m-0" />
+
+            {/* Footer */}
+            <Section className="py-6 px-10 bg-[#f7f7f7]">
+              <Text className="m-0 text-[15px] font-bold text-[#111827]">
+                Need help?
+              </Text>
+              <Text className="m-0 mt-2 text-[14px] text-[#6b7280]">
+                Reply to this email or contact us if you have any questions
+                about your order.
+              </Text>
+            </Section>
+
+            <Hr className="border-[#e5e5e5] m-0" />
+
+            <Section className="py-6 px-10 text-center">
+              <Text className="m-0 text-[20px] font-bold text-[#ea580c]">
+                🥟 Dumpling Bois
+              </Text>
+              <Link
+                href={baseUrl}
+                className="text-[14px] text-[#6b7280] mt-2 inline-block"
+              >
+                Visit our site
+              </Link>
+            </Section>
+
+            <Section className="py-4 px-10 text-center">
+              <Text className="m-0 text-[12px] text-[#9ca3af]">
+                You received this email because you placed an order at Dumpling
+                Bois.
+              </Text>
             </Section>
           </Container>
         </Body>
       </Tailwind>
     </Html>
   );
-  
-  export default ConfirmationEmail;
-  
+};
+
+export default ConfirmationEmail;

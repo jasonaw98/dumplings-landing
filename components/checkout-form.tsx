@@ -37,6 +37,14 @@ export function CheckoutForm() {
             json: () => Promise.resolve({ success: true }),
           });
         }, 3000);
+        fetch("/api/sendMail", {
+          method: "POST",
+          body: formData,
+        }).then(async (res) => {
+          if (!res.ok) {
+            throw new Error("Failed to send email");
+          }
+        });
         router.push("/checkout/success");
       }),
       // fetch("/api/receipt/telegram", {
@@ -110,6 +118,11 @@ export function CheckoutForm() {
                 type="hidden"
                 name="items"
                 value={simpleItems.join("\n")}
+              />
+              <input
+                type="hidden"
+                name="itemsJson"
+                value={JSON.stringify(items)}
               />
               <Label htmlFor="firstName">First Name</Label>
               <Input
