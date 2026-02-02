@@ -13,7 +13,6 @@ interface OrderDetails {
   items: CartItem[];
   totalPrice: number;
   firstName: string;
-  lastName: string;
   email: string;
   phone: string;
   address: string;
@@ -24,9 +23,11 @@ interface OrderDetails {
 
 export default function CheckoutSuccessPage() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
-  const { clearCart } = useCart();
+  const { clearCart, isInitialized } = useCart();
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     // Get order details from sessionStorage
     const savedOrder = sessionStorage.getItem("lastOrder");
     if (savedOrder) {
@@ -39,7 +40,7 @@ export default function CheckoutSuccessPage() {
         console.error("Failed to parse order details", e);
       }
     }
-  }, [clearCart]);
+  }, [clearCart, isInitialized]);
 
   if (!orderDetails) {
     return (
@@ -94,7 +95,9 @@ export default function CheckoutSuccessPage() {
             >
               <div className="flex items-center gap-2 mb-6">
                 <Package className="w-5 h-5 text-orange-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Order Summary</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Order Summary
+                </h2>
               </div>
               <div className="space-y-4">
                 {orderDetails.items.map((item, index) => (
@@ -131,7 +134,9 @@ export default function CheckoutSuccessPage() {
               </div>
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-gray-900">Total</span>
+                  <span className="text-lg font-semibold text-gray-900">
+                    Total
+                  </span>
                   <span className="text-3xl font-bold text-orange-600">
                     RM {orderDetails.totalPrice.toFixed(2)}
                   </span>
@@ -155,7 +160,7 @@ export default function CheckoutSuccessPage() {
               <div className="space-y-4 text-gray-700">
                 <div>
                   <p className="font-semibold text-gray-900 mb-1">
-                    {orderDetails.firstName} {orderDetails.lastName}
+                    {orderDetails.firstName}
                   </p>
                   <p className="text-sm">{orderDetails.address}</p>
                   <p className="text-sm">
@@ -215,18 +220,20 @@ export default function CheckoutSuccessPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-gray-700">
                   <Phone className="w-4 h-4 text-orange-600" />
-                  <a href="https://api.whatsapp.com/send/?phone=600108227137&text&type=phone_number"
-                    target="_blank">
-                    <span className="hover:text-orange-500 transition-colors underline">WhatsApp us for support</span>
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=600108227137&text&type=phone_number"
+                    target="_blank"
+                  >
+                    <span className="hover:text-orange-500 transition-colors underline">
+                      WhatsApp us for support
+                    </span>
                   </a>
                 </div>
               </div>
             </motion.div>
 
             <Link href="/" className="block">
-              <Button
-                className="w-full h-12 text-lg bg-gray-900 hover:bg-orange-500 text-white rounded-xl transition-colors flex items-center justify-center gap-2"
-              >
+              <Button className="w-full h-12 text-lg bg-gray-900 hover:bg-orange-500 text-white rounded-xl transition-colors flex items-center justify-center gap-2">
                 <Home className="w-5 h-5" />
                 Back to Home
               </Button>

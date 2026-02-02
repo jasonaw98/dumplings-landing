@@ -15,15 +15,22 @@ export async function POST(req: Request) {
     const totalPrice = formData.get("totalPrice")?.toString();
     const items = formData.get("items")?.toString();
     const firstName = formData.get("firstName")?.toString();
-    const lastName = formData.get("lastName")?.toString();
     const address = formData.get("address")?.toString();
     const city = formData.get("city")?.toString();
     const zip = formData.get("zip")?.toString();
 
-    if (!file || !firstName || !lastName || !address || !city || !zip || !totalPrice || !items) {
+    if (
+      !file ||
+      !firstName ||
+      !address ||
+      !city ||
+      !zip ||
+      !totalPrice ||
+      !items
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -34,7 +41,7 @@ export async function POST(req: Request) {
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: "File too large (max 5MB)" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -50,7 +57,7 @@ export async function POST(req: Request) {
 🧾 *New Order Payment*
 ━━━━━━━━━━━━━━
 File: *${file.name}*
-Name: *${firstName} ${lastName}*
+Name: *${firstName}*
 Address: *${address}*
 City: *${city}*
 Zip: *${zip}*
@@ -60,7 +67,7 @@ Items: *\n${items}*
 *${new Date().toLocaleString()}*
         `,
         parse_mode: "Markdown",
-      }
+      },
     );
 
     return NextResponse.json({ success: true });
@@ -68,7 +75,7 @@ Items: *\n${items}*
     console.error("Receipt upload error:", err);
     return NextResponse.json(
       { error: "Failed to upload receipt" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -66,14 +66,14 @@ export function Footer() {
                 target="_blank"
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors"
               >
-                <Instagram className="size-5"/>
+                <Instagram className="size-5" />
               </a>
               <a
                 href="https://www.facebook.com/profile.php?id=61580374323144&mibextid=wwXIfr&rdid=8WvdYsQ7RUhZ8i2v"
                 target="_blank"
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors"
               >
-                <Facebook className="size-5"/>
+                <Facebook className="size-5" />
               </a>
               <a
                 href="https://api.whatsapp.com/send/?phone=600108227137&text&type=phone_number"
@@ -102,4 +102,3 @@ export function Footer() {
     </footer>
   );
 }
-

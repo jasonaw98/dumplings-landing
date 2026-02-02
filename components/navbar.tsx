@@ -23,7 +23,8 @@ export function Navbar() {
           href="/"
           className="text-2xl font-bold text-orange-600 flex items-center gap-2"
         >
-          <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" /> Dumpling Bois
+          <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" />{" "}
+          Dumpling Bois
         </Link>
 
         {/* Desktop Menu */}
@@ -61,7 +62,8 @@ export function Navbar() {
             className="bg-orange-500 hover:bg-orange-600 text-white rounded-full relative"
             onClick={toggleCart}
           >
-            <ShoppingBag className="mr-2 h-4 w-4" />Cart
+            <ShoppingBag className="mr-2 h-4 w-4" />
+            Cart
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
                 {totalItems}

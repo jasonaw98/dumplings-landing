@@ -11,12 +11,11 @@ export async function POST(req: Request) {
   const totalPrice = formData.get("totalPrice")?.toString();
   const itemsJson = formData.get("itemsJson")?.toString();
   const firstName = formData.get("firstName")?.toString();
-  const lastName = formData.get("lastName")?.toString();
   const address = formData.get("address")?.toString();
   const city = formData.get("city")?.toString();
   const zip = formData.get("zip")?.toString();
 
-  if (!email || !firstName || !lastName || !address || !city || !zip || !totalPrice) {
+  if (!email || !firstName || !address || !city || !zip || !totalPrice) {
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
@@ -28,7 +27,6 @@ export async function POST(req: Request) {
     try {
       items = JSON.parse(itemsJson);
     } catch {
-      // Fallback: parse "Name x Qty" lines if items was sent as plain text
       const itemsStr = formData.get("items")?.toString();
       if (itemsStr) {
         items = itemsStr.split("\n").map((line) => {
@@ -51,6 +49,8 @@ export async function POST(req: Request) {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
+      port: 587,
+      host: "smtp.gmail.com",
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -61,7 +61,6 @@ export async function POST(req: Request) {
       ConfirmationEmail({
         orderNumber,
         firstName,
-        lastName,
         email,
         phone: phone ?? undefined,
         address,
@@ -75,15 +74,13 @@ export async function POST(req: Request) {
       })
     );
 
-    // Define email content
     const mailOptions = {
-      from: process.env.SMTP_USER,
+      from: `Dumpling Bois <${process.env.SMTP_USER}>`,
       to: email,
-      subject: `Your Dumpling Bois order is confirmed. Order ${new Date().getTime().toString()} – thank you, ${firstName}!`,
+      subject: `Your Dumpling Bois order is confirmed. Thank you, ${firstName}!`,
       html: emailHtml,
     };
 
-    // Function to send the email
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json(

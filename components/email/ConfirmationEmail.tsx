@@ -27,7 +27,6 @@ export type ConfirmationEmailCartItem = {
 export type ConfirmationEmailProps = {
   orderNumber?: string;
   firstName?: string;
-  lastName?: string;
   email?: string;
   phone?: string;
   address?: string;
@@ -47,7 +46,6 @@ const defaultBaseUrl =
 export const ConfirmationEmail = ({
   orderNumber = `#${Date.now().toString().slice(-8)}`,
   firstName = "there",
-  lastName = "",
   email = "customer@example.com",
   phone = "",
   address = "123 Dumpling Lane",
@@ -75,8 +73,21 @@ export const ConfirmationEmail = ({
   totalPrice = 74.5,
   baseUrl = defaultBaseUrl,
 }: ConfirmationEmailProps) => {
-  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+  const fullName = firstName;
   const displayTotal = totalPrice.toFixed(2);
+  const words = [
+    "You didn't overthink it. You ordered dumplings.",
+    "This is not a drill. Dumplings are on the way.",
+    "Later makan, sure smile one.",
+    "Correct choice, boss.",
+    "Can relax already. Dumplings secured.",
+    "Freezer got dumplings, life got direction.",
+    "Folded with love. Ordered with confidence.",
+    "Frozen now, later confirm syok.",
+    "Keep frozen first, don't say we never remind.",
+    "Confirm shiok!!",
+    "✨ Not Your Grandma's Dumplings",
+  ];
 
   return (
     <Html>
@@ -124,7 +135,7 @@ export const ConfirmationEmail = ({
                 className="mx-auto mb-4"
               />
               <Text className="m-0 text-xs font-semibold text-[#ea580c] uppercase tracking-wider">
-                ✨ Not Your Grandma&apos;s Dumplings
+                {words[Math.floor(Math.random() * words.length)]}
               </Text>
               <Heading className="m-0 mt-2 text-[28px] leading-tight font-bold text-[#111827]">
                 Order Confirmed! 🎉
@@ -203,7 +214,9 @@ export const ConfirmationEmail = ({
                       {phone}
                     </Text>
                   ) : null}
-                  <Text className="m-0 text-[14px] text-[#6b7280]">{email}</Text>
+                  <Text className="m-0 text-[14px] text-[#6b7280]">
+                    {email}
+                  </Text>
                 </Column>
                 <Column>
                   <Text className="m-0 text-[14px] text-[#6b7280]">
