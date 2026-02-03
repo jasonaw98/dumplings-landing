@@ -171,6 +171,22 @@ export function CheckoutForm() {
         </div>
       </div>
 
+      {/* Referral code (optional) */}
+      {/* <div className="space-y-4">
+        <h3 className="text-xl font-bold text-gray-900">Referral</h3>
+        <div className="grid gap-2">
+          <Label htmlFor="referralCode" className="text-neutral-600">
+            Referral code <span className="text-gray-400 font-normal">(optional)</span>
+          </Label>
+          <Input
+            id="referralCode"
+            name="referralCode"
+            placeholder="e.g. FRIEND10"
+            className="max-w-xs"
+          />
+        </div>
+      </div> */}
+
       {/* Payment Method */}
       <div className="space-y-4">
         <h3 className="text-xl font-bold text-gray-900">Payment</h3>
