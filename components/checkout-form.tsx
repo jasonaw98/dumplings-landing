@@ -13,12 +13,10 @@ export function CheckoutForm() {
   const router = useRouter();
 
   async function submitReceipt(formData: FormData) {
-    // Save order details to sessionStorage before redirecting
     const orderDetails = {
       items: items,
       totalPrice: totalPrice,
       firstName: formData.get("firstName")?.toString() || "",
-      lastName: formData.get("lastName")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
       address: formData.get("address")?.toString() || "",
@@ -28,47 +26,40 @@ export function CheckoutForm() {
     };
     sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
-    toast.promise(
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve({
-            ok: true,
-            status: 200,
-            json: () => Promise.resolve({ success: true }),
-          });
-        }, 3000);
-        fetch("/api/sendMail", {
-          method: "POST",
-          body: formData,
-        }).then(async (res) => {
-          if (!res.ok) {
-            throw new Error("Failed to send email");
-          }
-        });
-        router.push("/checkout/success");
+    const res = await fetch("/api/payments/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: totalPrice,
+        mobile: orderDetails.phone,
+        email: orderDetails.email,
+        name: orderDetails.firstName,
+        origin: window.location.origin,
       }),
-      // fetch("/api/receipt/telegram", {
-      //   method: "POST",
-      //   body: formData,
-      // }).then(async (res) => {
-      //   if (!res.ok) {
-      //     // Try to read error message from response if possible
-      //     let message = "Upload failed";
-      //     try {
-      //       const data = await res.json();
-      //       if (data?.error) message = data.error;
-      //     } catch (e) {}
-      //     throw new Error(message);
-      //   }
-      //   router.push("/checkout/success");
-      //   return res;
-      // }),
-      {
-        loading: "Sending Order...",
-        success: "Order sent successfully",
-        error: (err) => err.message || "Order failed",
-      }
-    );
+    });
+
+    const { paymentUrl } = await res.json();
+    window.location.href = paymentUrl;
+
+    // toast.promise(
+    //   new Promise((resolve, reject) => {
+    //     fetch("/api/sendMail", {
+    //       method: "POST",
+    //       body: formData,
+    //     }).then(async (res) => {
+    //       if (!res.ok) {
+    //         throw new Error("Failed to send email");
+    //       }
+    //       resolve(res);
+    //       router.push("/checkout/success");
+    //     });
+    //   }),
+    //   {
+    //     loading: "Sending Order...",
+    //     success: "Order sent successfully",
+    //     error: (err) => err.message || "Order failed",
+    //   },
+    // );
   }
 
   return (
@@ -111,7 +102,7 @@ export function CheckoutForm() {
       <div className="space-y-4 text-neutral-600">
         <h3 className="text-xl font-bold text-gray-900">Delivery Address</h3>
         <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4">
             <div className="grid gap-2">
               <input type="hidden" name="totalPrice" value={totalPrice} />
               <input
@@ -124,21 +115,11 @@ export function CheckoutForm() {
                 name="itemsJson"
                 value={JSON.stringify(items)}
               />
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">Full Name</Label>
               <Input
                 id="firstName"
                 name="firstName"
                 placeholder="John"
-                required
-                type="text"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                name="lastName"
-                placeholder="Doe"
                 required
                 type="text"
               />
