@@ -1,18 +1,37 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useCart } from "@/lib/cart-context";
+import { getReferralCode, clearStoredReferralCode } from "@/lib/referral";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export function CheckoutForm() {
   const { items, totalPrice } = useCart();
   const simpleItems = items.map((item) => `${item.name} x ${item.quantity}`);
-  const router = useRouter();
+  const [referralCode, setReferralCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setReferralCode(getReferralCode() ?? "");
+  }, []);
 
   async function submitReceipt(formData: FormData) {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await submitOrder(formData);
+      toast.success("Redirecting to payment...");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function submitOrder(formData: FormData) {
     const orderDetails = {
       items: items,
       totalPrice: totalPrice,
@@ -26,6 +45,8 @@ export function CheckoutForm() {
     };
     sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
+    const refToSend = (formData.get("referralCode")?.toString() ?? referralCode)?.trim() || undefined;
+
     const res = await fetch("/api/payments/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -35,31 +56,23 @@ export function CheckoutForm() {
         email: orderDetails.email,
         name: orderDetails.firstName,
         origin: window.location.origin,
+        address: orderDetails.address,
+        city: orderDetails.city,
+        zip: orderDetails.zip,
+        items: orderDetails.items,
+        totalPrice: orderDetails.totalPrice,
+        referralCode: refToSend ?? null,
       }),
     });
 
-    const { paymentUrl } = await res.json();
-    window.location.href = paymentUrl;
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error ?? "Failed to create payment");
+    }
 
-    // toast.promise(
-    //   new Promise((resolve, reject) => {
-    //     fetch("/api/sendMail", {
-    //       method: "POST",
-    //       body: formData,
-    //     }).then(async (res) => {
-    //       if (!res.ok) {
-    //         throw new Error("Failed to send email");
-    //       }
-    //       resolve(res);
-    //       router.push("/checkout/success");
-    //     });
-    //   }),
-    //   {
-    //     loading: "Sending Order...",
-    //     success: "Order sent successfully",
-    //     error: (err) => err.message || "Order failed",
-    //   },
-    // );
+    const { paymentUrl } = await res.json();
+    clearStoredReferralCode();
+    window.location.href = paymentUrl;
   }
 
   return (
@@ -152,8 +165,8 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      {/* Referral code (optional) */}
-      {/* <div className="space-y-4">
+      {/* Referral code: prefilled from link (?ref=CODE) or stored from earlier visit */}
+      <div className="space-y-4">
         <h3 className="text-xl font-bold text-gray-900">Referral</h3>
         <div className="grid gap-2">
           <Label htmlFor="referralCode" className="text-neutral-600">
@@ -164,9 +177,11 @@ export function CheckoutForm() {
             name="referralCode"
             placeholder="e.g. FRIEND10"
             className="max-w-xs"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
           />
         </div>
-      </div> */}
+      </div>
 
       {/* Payment Method */}
       <div className="space-y-4">
@@ -178,9 +193,10 @@ export function CheckoutForm() {
 
       <Button
         type="submit"
+        disabled={isSubmitting}
         className="w-full h-12 text-lg bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
       >
-        Place Order
+        {isSubmitting ? "Redirecting to payment…" : "Place Order"}
       </Button>
     </form>
   );

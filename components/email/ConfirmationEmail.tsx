@@ -26,7 +26,7 @@ export type ConfirmationEmailCartItem = {
 
 export type ConfirmationEmailProps = {
   orderNumber?: string;
-  firstName?: string;
+  fullName?: string;
   email?: string;
   phone?: string;
   address?: string;
@@ -45,12 +45,12 @@ const defaultBaseUrl =
 
 export const ConfirmationEmail = ({
   orderNumber = `#${Date.now().toString().slice(-8)}`,
-  firstName = "there",
-  email = "customer@example.com",
-  phone = "",
+  fullName = "John Doe",
+  email = "john.doe@example.com",
+  phone = "0123456789",
   address = "123 Dumpling Lane",
   city = "Kuala Lumpur",
-  zip = "50000",
+  zip = "500000",
   orderDate = new Date().toLocaleDateString("en-MY", {
     dateStyle: "long",
   }),
@@ -73,7 +73,6 @@ export const ConfirmationEmail = ({
   totalPrice = 74.5,
   baseUrl = defaultBaseUrl,
 }: ConfirmationEmailProps) => {
-  const fullName = firstName;
   const displayTotal = totalPrice.toFixed(2);
   const words = [
     "You didn't overthink it. You ordered dumplings.",
@@ -122,7 +121,7 @@ export const ConfirmationEmail = ({
         <Body className="bg-[#f5f5f5] font-outfit">
           <Preview>
             Your Dumpling Bois order is confirmed. Order {orderNumber} – thank
-            you, {firstName}!
+            you, {fullName}!
           </Preview>
           <Container className="my-[20px] mx-auto w-[600px] max-w-full rounded-2xl overflow-hidden border border-[#ffedd5] bg-[#fff7ed]">
             {/* Header */}
@@ -141,7 +140,7 @@ export const ConfirmationEmail = ({
                 Order Confirmed! 🎉
               </Heading>
               <Text className="m-0 mt-3 text-[15px] text-[#4b5563]">
-                Thank you for your order, {firstName}! We&apos;ve received your
+                Thank you for your order, {fullName}! We&apos;ve received your
                 details and payment receipt.
               </Text>
               <Text className="m-0 mt-2 text-[14px] font-semibold text-[#6b7280]">
