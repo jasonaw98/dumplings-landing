@@ -5,6 +5,7 @@ import type { Database } from "@/lib/supabase/types";
 import nodemailer from "nodemailer";
 import { render } from "@react-email/components";
 import { ConfirmationEmail } from "@/components/email/ConfirmationEmail";
+import { PaymentFailedEmail } from "@/components/email/PaymentFailedEmail";
 
 type OrderRow = Database["public"]["Tables"]["orders"]["Row"];
 
@@ -15,7 +16,6 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
 
     const data = Object.fromEntries(new URLSearchParams(rawBody));
-    console.log("This is data from webhook", data);
 
     const { x_signature, ...paramsWithoutSignature } = data;
 
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
             orderNumber: order.order_number,
             fullName: order.full_name,
             email: order.email,
-            phone: order.phone ?? undefined,
+            phone: order.phone ?? "",
             address: order.address,
             city: order.city,
             zip: order.zip,
@@ -113,12 +113,58 @@ export async function POST(req: Request) {
         amount: paramsWithoutSignature.amount,
       });
     } else if (state === "failed" || state === "due") {
-      console.log("Transaction failed or due");
+      console.log("Transaction failed or due – sending payment link email");
+
+      const billUrl = paramsWithoutSignature.url;
+      let order: OrderRow | null = null;
+      if (supabaseAdmin && billUrl) {
+        const { data } = await supabaseAdmin
+          .from("orders")
+          .select("*")
+          .eq("bill_url", billUrl)
+          .single();
+        order = data as OrderRow | null;
+      }
+
+      if (order && process.env.SMTP_USER && process.env.SMTP_PASS) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          port: 587,
+          host: "smtp.gmail.com",
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        const emailHtml = await render(
+          PaymentFailedEmail({
+            fullName: order.full_name,
+            orderNumber: order.order_number,
+            amount: Number(order.total_price).toFixed(2),
+            billUrl,
+            baseUrl: process.env.NEXT_PUBLIC_SITE_URL ||
+              (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
+          })
+        );
+
+        await transporter.sendMail({
+          from: `Dumpling Bois <${process.env.SMTP_USER}>`,
+          to: order.email,
+          subject: `Complete your Dumpling Bois order ${order.order_number}`,
+          html: emailHtml,
+        }).catch((err) => {
+          console.error("Failed to send payment-failed email:", err);
+        });
+      } else if (!order) {
+        console.warn("Order not found for bill_url, skipping payment-failed email. Bill id:", paramsWithoutSignature.id);
+      }
+
       return NextResponse.json({
         success: false,
-        message: "Payment failed",
+        message: "Payment failed or due",
         billId: paramsWithoutSignature.id,
-        state: state
+        state: state,
       });
     } else {
       console.log("Transaction status unknown:", state);
@@ -159,7 +205,7 @@ export function verifyBillplzSignature(params: Record<string, string>, receivedS
 
     // Step 3: Combine with "|" separator
     const sourceString = sortedKeyValueStrings.join("|");
-    console.log("Constructed source string:", sourceString);
+    // console.log("Constructed source string:", sourceString);
 
     // Step 4: Compute HMAC-SHA256
     const computedSignature = crypto
@@ -167,8 +213,7 @@ export function verifyBillplzSignature(params: Record<string, string>, receivedS
       .update(sourceString)
       .digest("hex");
 
-    console.log("Computed signature:", computedSignature);
-    console.log("Received signature:", receivedSignature);
+    // console.log("Computed signature:", computedSignature);
 
     // Step 5: Compare signatures (use constant-time comparison for security)
     return crypto.timingSafeEqual(

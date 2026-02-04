@@ -25,16 +25,16 @@ export type ConfirmationEmailCartItem = {
 };
 
 export type ConfirmationEmailProps = {
-  orderNumber?: string;
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  zip?: string;
-  orderDate?: string;
+  orderNumber: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  zip: string;
+  orderDate: string;
   items?: any[];
-  totalPrice?: number;
+  totalPrice: number;
   baseUrl?: string;
 };
 
@@ -44,33 +44,16 @@ const defaultBaseUrl =
     : "https://dumplingbois.com";
 
 export const ConfirmationEmail = ({
-  orderNumber = `#${Date.now().toString().slice(-8)}`,
-  fullName = "John Doe",
-  email = "john.doe@example.com",
-  phone = "0123456789",
-  address = "123 Dumpling Lane",
-  city = "Kuala Lumpur",
-  zip = "500000",
-  orderDate = new Date().toLocaleDateString("en-MY", {
-    dateStyle: "long",
-  }),
-  items = [
-    {
-      id: 1,
-      name: "Shrimp",
-      price: 25.5,
-      image: "/fillings/shrimp.png",
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Mushroom",
-      price: 23.5,
-      image: "/fillings/mushroom.png",
-      quantity: 1,
-    },
-  ],
-  totalPrice = 74.5,
+  orderNumber,
+  fullName,
+  email,
+  phone,
+  address,
+  city,
+  zip,
+  orderDate,
+  items,
+  totalPrice,
   baseUrl = defaultBaseUrl,
 }: ConfirmationEmailProps) => {
   const displayTotal = totalPrice.toFixed(2);
@@ -153,7 +136,7 @@ export const ConfirmationEmail = ({
               <Text className="m-0 mb-4 text-base font-bold text-[#111827]">
                 Order Summary
               </Text>
-              {items.map((item) => (
+              {items && items.map((item) => (
                 <Row key={item.id} className="mb-4">
                   <Column className="align-top" width="80">
                     <Img

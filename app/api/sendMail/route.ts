@@ -11,13 +11,13 @@ export async function POST(req: Request) {
   const phone = formData.get("phone")?.toString();
   const totalPrice = formData.get("totalPrice")?.toString();
   const itemsJson = formData.get("itemsJson")?.toString();
-  const firstName = formData.get("firstName")?.toString();
+  const fullName = formData.get("fullName")?.toString();
   const address = formData.get("address")?.toString();
   const city = formData.get("city")?.toString();
   const zip = formData.get("zip")?.toString();
   const referralCode = formData.get("referralCode")?.toString()?.trim() || null;
 
-  if (!email || !firstName || !address || !city || !zip || !totalPrice) {
+  if (!email || !fullName || !address || !city || !zip || !totalPrice) {
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const orderNumber = `#${Date.now().toString().slice(-8)}`;
+  const orderNumber = `${Date.now().toString().slice(-8)}`;
   const orderDate = new Date().toLocaleDateString("en-MY", { dateStyle: "long" });
 
   try {
@@ -62,9 +62,9 @@ export async function POST(req: Request) {
     const emailHtml = await render(
       ConfirmationEmail({
         orderNumber,
-        firstName,
+        fullName,
         email,
-        phone: phone ?? undefined,
+        phone: phone ?? "",
         address,
         city,
         zip,
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: `Dumpling Bois <${process.env.SMTP_USER}>`,
       to: email,
-      subject: `Your Dumpling Bois order is confirmed. Thank you, ${firstName}!`,
+      subject: `Your Dumpling Bois order is confirmed. Thank you, ${fullName}!`,
       html: emailHtml,
     };
 
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     if (supabaseAdmin) {
       const { error: orderError } = await supabaseAdmin.from("orders").insert({
         order_number: orderNumber,
-        full_name: firstName,
+        full_name: fullName,
         email,
         phone: phone || null,
         address,

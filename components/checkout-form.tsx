@@ -35,7 +35,7 @@ export function CheckoutForm() {
     const orderDetails = {
       items: items,
       totalPrice: totalPrice,
-      firstName: formData.get("firstName")?.toString() || "",
+      fullName: formData.get("fullName")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
       address: formData.get("address")?.toString() || "",
@@ -54,7 +54,7 @@ export function CheckoutForm() {
         amount: totalPrice,
         mobile: orderDetails.phone,
         email: orderDetails.email,
-        name: orderDetails.firstName,
+        name: orderDetails.fullName,
         origin: window.location.origin,
         address: orderDetails.address,
         city: orderDetails.city,
@@ -104,9 +104,12 @@ export function CheckoutForm() {
               id="phone"
               type="tel"
               name="phone"
-              placeholder="+60 12-345 6789"
+              placeholder="+60122345678 or 60122345678"
               required
+              pattern="^\+?60\d{8,10}$"
+              title="Please enter a valid Malaysian phone number with country code, e.g. +60122345678 or 60122345678"
             />
+            <p className="text-xs text-gray-500">Format: +60122345678 or 60122345678</p>
           </div>
         </div>
       </div>
@@ -128,11 +131,11 @@ export function CheckoutForm() {
                 name="itemsJson"
                 value={JSON.stringify(items)}
               />
-              <Label htmlFor="firstName">Full Name</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
-                id="firstName"
-                name="firstName"
-                placeholder="John"
+                id="fullName"
+                name="fullName"
+                placeholder="John Doe"
                 required
                 type="text"
               />

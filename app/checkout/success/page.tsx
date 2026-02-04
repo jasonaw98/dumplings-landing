@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Package, MapPin, Phone, Mail, Home } from "lucide-react";
 import Image from "next/image";
@@ -12,47 +13,99 @@ import type { CartItem } from "@/lib/cart-context";
 interface OrderDetails {
   items: CartItem[];
   totalPrice: number;
-  firstName: string;
+  fullName: string;
   email: string;
   phone: string;
   address: string;
   city: string;
   zip: string;
   orderDate: string;
+  orderNumber: string;
 }
 
 export default function CheckoutSuccessPage() {
+  const searchParams = useSearchParams();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
+  const [error, setError] = useState(false);
   const { clearCart, isInitialized } = useCart();
 
   useEffect(() => {
     if (!isInitialized) return;
 
-    // Get order details from sessionStorage
+    const ref = searchParams.get("order_number");
+
+    if (ref) {
+      fetch(`/api/orders/by-number?order_number=${encodeURIComponent(ref)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Not found");
+          return res.json();
+        })
+        .then((order) => {
+          setOrderDetails({
+            items: (order.items ?? []).map((item: { id: number; name: string; price: number; quantity: number; image?: string }) => ({
+              ...item,
+              image: item.image ?? "",
+            })),
+            totalPrice: Number(order.total_price),
+            fullName: order.full_name,
+            email: order.email,
+            phone: order.phone ?? "",
+            address: order.address,
+            city: order.city,
+            zip: order.zip,
+            orderDate: order.created_at
+              ? new Date(order.created_at).toLocaleDateString("en-MY", { dateStyle: "long" })
+              : new Date().toLocaleDateString("en-MY", { dateStyle: "long" }),
+            orderNumber: order.order_number,
+          });
+          clearCart();
+        })
+        .catch(() => setError(true));
+      return;
+    }
+
+    // Fallback: sessionStorage (e.g. direct visit or old link)
     const savedOrder = sessionStorage.getItem("lastOrder");
     if (savedOrder) {
       try {
-        const order = JSON.parse(savedOrder);
-        setOrderDetails(order);
-        // Clear the cart after showing the order
+        const parsed = JSON.parse(savedOrder);
+        setOrderDetails({
+          ...parsed,
+          fullName: parsed.fullName ?? parsed.firstName ?? "",
+        });
         clearCart();
       } catch (e) {
         console.error("Failed to parse order details", e);
+        setError(true);
       }
+    } else {
+      setError(true);
     }
-  }, [clearCart, isInitialized]);
+  }, [searchParams, clearCart, isInitialized]);
 
-  if (!orderDetails) {
+  if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-orange-50">
         <div className="text-center">
-          <p className="text-gray-600">Loading order details...</p>
+          <p className="text-gray-600 mb-4">We couldn’t load this order.</p>
+          <Link href="/">
+            <Button className="bg-orange-500 hover:bg-orange-600">Back to Home</Button>
+          </Link>
         </div>
       </div>
     );
   }
 
-  const orderNumber = `#${Date.now().toString().slice(-8)}`;
+  if (!orderDetails) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-orange-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading order details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-b from-orange-50 to-white pt-12 pb-12 px-4">
@@ -76,10 +129,10 @@ export default function CheckoutSuccessPage() {
             Order Confirmed! 🎉
           </h1>
           <p className="text-xl text-gray-600 mb-2">
-            Thank you for your order, {orderDetails.firstName}!
+            Thank you for your order, {orderDetails.fullName}!
           </p>
           <p className="text-sm text-gray-500">
-            Order Number: <span className="font-semibold">{orderNumber}</span>
+            Order Number: <span className="font-semibold">{orderDetails.orderNumber}</span>
           </p>
         </motion.div>
 
@@ -160,7 +213,7 @@ export default function CheckoutSuccessPage() {
               <div className="space-y-4 text-gray-700">
                 <div>
                   <p className="font-semibold text-gray-900 mb-1">
-                    {orderDetails.firstName}
+                    {orderDetails.fullName}
                   </p>
                   <p className="text-sm">{orderDetails.address}</p>
                   <p className="text-sm">

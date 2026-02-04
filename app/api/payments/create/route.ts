@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const orderNumber = `#${Date.now().toString().slice(-8)}`;
+    const orderNumber = `${Date.now().toString().slice(-8)}`;
     const orderDate = new Date().toLocaleDateString("en-MY", {
       dateStyle: "long",
     });
@@ -22,9 +22,8 @@ export async function POST(req: Request) {
       ? `${origin}/api/payments/webhook`
       : `${process.env.NEXT_PUBLIC_APP_URL}/api/payments/webhook`;
 
-    const redirectUrl = origin
-      ? `${origin}/checkout/success`
-      : `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success`;
+    const baseOrigin = origin || process.env.NEXT_PUBLIC_APP_URL;
+    const redirectUrl = `${baseOrigin}/checkout/result?order_number=${encodeURIComponent(orderNumber)}`;
 
     const bill = await billplzFetch("/api/v3/bills", {
       method: "POST",
