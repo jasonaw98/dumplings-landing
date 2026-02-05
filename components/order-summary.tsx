@@ -7,7 +7,7 @@ export function OrderSummary() {
   const { items, totalPrice, shippingFee, finalTotalPrice } = useCart();
 
   return (
-    <div className="bg-gray-50 p-8 rounded-3xl sticky top-24">
+    <div className="bg-gray-50 p-3 rounded-3xl sticky top-24">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
 
       <div className="space-y-6 mb-8">
@@ -45,13 +45,35 @@ export function OrderSummary() {
       <div className="space-y-3 pt-6 border-t border-gray-200 text-gray-600">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>RM {totalPrice.toFixed(2)}</span>
+          <span className="font-medium">RM {totalPrice.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span>Delivery Fee</span>
-          <span>
+          <span className="font-medium">
             {shippingFee === 0 ? "Free" : `RM ${shippingFee.toFixed(2)}`}
           </span>
+        </div>
+
+        <div className="p-3 px-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm">
+          <p className="font-semibold mb-2 text-gray-700">Shipping Fee</p>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <span>1-2 boxes</span>
+              <span>RM 18.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>3-5 boxes</span>
+              <span>RM 10.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>6-9 boxes</span>
+              <span>RM 6.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>10+ boxes</span>
+              <span className="text-green-600 font-medium">Free</span>
+            </div>
+          </div>
         </div>
         <div className="flex justify-between text-lg font-bold text-gray-900 pt-3 border-t border-gray-200">
           <span>Total</span>
@@ -64,8 +86,12 @@ export function OrderSummary() {
       <div className="bg-linear-to-br from-orange-400 to-orange-500 rounded-2xl shadow-lg p-5 text-white mt-6">
         <h3 className="text-lg font-bold mb-2">Tips!</h3>
         <p className="font-semibold">🧊 Storage: Keep frozen at -18°C</p>
-        <p className="font-semibold">🍳 Cooking methods: Steam, pan-fry, or boil</p>
-        <p className="font-semibold">✨ Best enjoyed: Crispy bottom or juicy steamed</p>
+        <p className="font-semibold">
+          🍳 Cooking methods: Steam, pan-fry, or boil
+        </p>
+        <p className="font-semibold">
+          ✨ Best enjoyed: Crispy bottom or juicy steamed
+        </p>
       </div>
     </div>
   );
