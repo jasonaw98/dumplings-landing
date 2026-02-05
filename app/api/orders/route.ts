@@ -5,9 +5,21 @@ import { PaymentStatus } from "@/lib/supabase/types";
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
   const apiKey = process.env.ADMIN_API_KEY;
-  if (apiKey && authHeader !== `Bearer ${apiKey}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: "Server misconfigured" }, 
+      { status: 500 }
+    );
   }
+  
+  if (!authHeader || authHeader !== `Bearer ${apiKey}`) {
+    return NextResponse.json(
+      { error: "Unauthorized" }, 
+      { status: 401 }
+    );
+  }
+  
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Supabase not configured" },
