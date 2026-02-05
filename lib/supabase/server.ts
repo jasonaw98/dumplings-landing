@@ -1,8 +1,10 @@
+"use server";
+
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceRoleKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!;
+const supabaseServiceRoleKey = process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!;
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
   console.warn(

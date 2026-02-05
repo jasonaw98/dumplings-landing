@@ -186,14 +186,6 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      {/* Payment Method */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900">Payment</h3>
-        <div className="p-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm">
-          ⚠️ Payment integration coming soon. You won't be charged yet.
-        </div>
-      </div>
-
       <Button
         type="submit"
         disabled={isSubmitting}
