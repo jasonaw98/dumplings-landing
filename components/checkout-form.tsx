@@ -1,24 +1,41 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useCart } from "@/lib/cart-context";
+import { getReferralCode, clearStoredReferralCode } from "@/lib/referral";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export function CheckoutForm() {
   const { items, totalPrice } = useCart();
   const simpleItems = items.map((item) => `${item.name} x ${item.quantity}`);
-  const router = useRouter();
+  const [referralCode, setReferralCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setReferralCode(getReferralCode() ?? "");
+  }, []);
 
   async function submitReceipt(formData: FormData) {
-    // Save order details to sessionStorage before redirecting
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await submitOrder(formData);
+      toast.success("Redirecting to payment...");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function submitOrder(formData: FormData) {
     const orderDetails = {
       items: items,
       totalPrice: totalPrice,
-      firstName: formData.get("firstName")?.toString() || "",
-      lastName: formData.get("lastName")?.toString() || "",
+      fullName: formData.get("fullName")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
       address: formData.get("address")?.toString() || "",
@@ -28,29 +45,34 @@ export function CheckoutForm() {
     };
     sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
-    toast.promise(
-      fetch("/api/receipt/telegram", {
-        method: "POST",
-        body: formData,
-      }).then(async (res) => {
-        if (!res.ok) {
-          // Try to read error message from response if possible
-          let message = "Upload failed";
-          try {
-            const data = await res.json();
-            if (data?.error) message = data.error;
-          } catch (e) {}
-          throw new Error(message);
-        }
-        router.push("/checkout/success");
-        return res;
+    const refToSend = (formData.get("referralCode")?.toString() ?? referralCode)?.trim() || undefined;
+
+    const res = await fetch("/api/payments/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: totalPrice,
+        mobile: orderDetails.phone,
+        email: orderDetails.email,
+        name: orderDetails.fullName,
+        origin: window.location.origin,
+        address: orderDetails.address,
+        city: orderDetails.city,
+        zip: orderDetails.zip,
+        items: orderDetails.items,
+        totalPrice: orderDetails.totalPrice,
+        referralCode: refToSend ?? null,
       }),
-      {
-        loading: "Sending Order...",
-        success: "Order sent successfully",
-        error: (err) => err.message || "Order failed",
-      }
-    );
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error ?? "Failed to create payment");
+    }
+
+    const { paymentUrl } = await res.json();
+    clearStoredReferralCode();
+    window.location.href = paymentUrl;
   }
 
   return (
@@ -82,9 +104,12 @@ export function CheckoutForm() {
               id="phone"
               type="tel"
               name="phone"
-              placeholder="+60 12-345 6789"
+              placeholder="+60122345678 or 60122345678"
               required
+              pattern="^\+?60\d{8,10}$"
+              title="Please enter a valid Malaysian phone number with country code, e.g. +60122345678 or 60122345678"
             />
+            <p className="text-xs text-gray-500">Format: +60122345678 or 60122345678</p>
           </div>
         </div>
       </div>
@@ -93,7 +118,7 @@ export function CheckoutForm() {
       <div className="space-y-4 text-neutral-600">
         <h3 className="text-xl font-bold text-gray-900">Delivery Address</h3>
         <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4">
             <div className="grid gap-2">
               <input type="hidden" name="totalPrice" value={totalPrice} />
               <input
@@ -101,21 +126,16 @@ export function CheckoutForm() {
                 name="items"
                 value={simpleItems.join("\n")}
               />
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                name="firstName"
-                placeholder="John"
-                required
-                type="text"
+              <input
+                type="hidden"
+                name="itemsJson"
+                value={JSON.stringify(items)}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
-                id="lastName"
-                name="lastName"
-                placeholder="Doe"
+                id="fullName"
+                name="fullName"
+                placeholder="John Doe"
                 required
                 type="text"
               />
@@ -148,35 +168,30 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      {/* Payment Method */}
+      {/* Referral code: prefilled from link (?ref=CODE) or stored from earlier visit */}
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900">Payment</h3>
-        <div className="p-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm">
-          ⚠️ Payment integration coming soon. You won't be charged yet.
-        </div>
+        <h3 className="text-xl font-bold text-gray-900">Referral</h3>
         <div className="grid gap-2">
-          <Label htmlFor="receipt" className="text-neutral-600">
-            Upload Receipt
+          <Label htmlFor="referralCode" className="text-neutral-600">
+            Referral code <span className="text-gray-400 font-normal">(optional)</span>
           </Label>
           <Input
-            id="receipt"
-            type="file"
-            name="receipt"
-            accept="image/*,.pdf"
-            required
-            className=" cursor-pointer text-neutral-600 file:mr-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:text-orange-600 transition-colors"
+            id="referralCode"
+            name="referralCode"
+            placeholder="e.g. FRIEND10"
+            className="max-w-xs"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
           />
-          <p className="text-xs text-neutral-500">
-            Please upload your payment receipt (Image or PDF)
-          </p>
         </div>
       </div>
 
       <Button
         type="submit"
+        disabled={isSubmitting}
         className="w-full h-12 text-lg bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
       >
-        Place Order
+        {isSubmitting ? "Redirecting to payment…" : "Place Order"}
       </Button>
     </form>
   );

@@ -22,6 +22,7 @@ interface CartContextType {
   openCart: () => void;
   closeCart: () => void;
   clearCart: () => void;
+  isInitialized: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -56,7 +57,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return currentItems.map((item) =>
           item.id === newItem.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
+            : item,
         );
       }
       return [...currentItems, { ...newItem, quantity: 1 }];
@@ -76,7 +77,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -88,7 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const totalPrice = items.reduce(
     (total, item) => total + item.price * item.quantity,
-    0
+    0,
   );
 
   return (
@@ -105,6 +106,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         openCart,
         closeCart,
         clearCart,
+        isInitialized,
       }}
     >
       {children}
