@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Package, MapPin, Phone, Mail, Home } from "lucide-react";
@@ -19,7 +19,7 @@ interface OrderDetails {
   orderNumber: string;
 }
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [error, setError] = useState(false);
@@ -279,5 +279,24 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SuccessFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-orange-50">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-600">Loading order details...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<SuccessFallback />}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
