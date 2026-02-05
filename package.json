@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@react-email/components": "^1.0.7",
     "@supabase/supabase-js": "^2.94.1",

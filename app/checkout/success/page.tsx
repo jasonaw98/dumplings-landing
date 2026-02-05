@@ -15,10 +15,6 @@ interface OrderDetails {
   totalPrice: number;
   fullName: string;
   email: string;
-  phone: string;
-  address: string;
-  city: string;
-  zip: string;
   orderDate: string;
   orderNumber: string;
 }
@@ -49,10 +45,6 @@ export default function CheckoutSuccessPage() {
             totalPrice: Number(order.total_price),
             fullName: order.full_name,
             email: order.email,
-            phone: order.phone ?? "",
-            address: order.address,
-            city: order.city,
-            zip: order.zip,
             orderDate: order.created_at
               ? new Date(order.created_at).toLocaleDateString("en-MY", { dateStyle: "long" })
               : new Date().toLocaleDateString("en-MY", { dateStyle: "long" }),
@@ -215,16 +207,8 @@ export default function CheckoutSuccessPage() {
                   <p className="font-semibold text-gray-900 mb-1">
                     {orderDetails.fullName}
                   </p>
-                  <p className="text-sm">{orderDetails.address}</p>
-                  <p className="text-sm">
-                    {orderDetails.city}, {orderDetails.zip}
-                  </p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600 pt-2 border-t border-gray-100">
-                  <Phone className="w-4 h-4" />
-                  <span>{orderDetails.phone}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Mail className="w-4 h-4" />
                   <span>{orderDetails.email}</span>
                 </div>

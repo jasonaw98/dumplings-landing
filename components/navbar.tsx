@@ -6,10 +6,14 @@ import { Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useCart } from "@/lib/cart-context";
+import { Switch } from "./ui/switch";
+import { useLanguage } from "@/lib/language-context";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { toggleCart, totalItems } = useCart();
+  const { language, setLanguage } = useLanguage();
 
   return (
     <motion.nav
@@ -19,13 +23,24 @@ export function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-orange-100"
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-2xl font-bold text-orange-600 flex items-center gap-2"
-        >
-          <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" />{" "}
-          Dumpling Bois
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="text-2xl font-bold text-orange-600 flex items-center gap-2"
+          >
+            <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" />{" "}
+            Dumpling Bois
+          </Link>
+          <div className="flex items-center gap-1">
+            <span className={cn(language === "en" ? "text-orange-500" : "text-gray-500", "font-semibold")}>EN</span>
+            <Switch
+              checked={language === "bm"}
+              onCheckedChange={() => setLanguage(language === "bm" ? "en" : "bm")}
+              className="data-checked:bg-orange-500 data-unchecked:bg-gray-200"
+            />
+            <span className={cn(language === "bm" ? "text-orange-500" : "text-gray-500", "font-semibold")}>BM</span>
+          </div>
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 font-medium text-gray-700">

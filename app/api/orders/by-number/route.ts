@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
   const { data, error } = await supabaseAdmin
     .from("orders")
-    .select("*")
+    .select("order_number, full_name, email, created_at, items, total_price")
     .eq("order_number", orderNumber.trim())
     .eq("payment_status", "verified")
     .single();

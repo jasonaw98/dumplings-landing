@@ -64,6 +64,7 @@ export function FloatingDumplings() {
                 src={item.src}
                 alt="Floating dumpling"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-contain drop-shadow-lg rounded-2xl"
               />
             </div>

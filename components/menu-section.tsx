@@ -4,14 +4,12 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/language-context";
+import { menuText } from "@/lib/translate-map";
 
 const bestsellers = [
   {
     id: 1,
-    name: "Shrimp",
-    description:
-      "A crowd-pleaser with extra bite. Juicy shrimp blended with seasoned chicken and spring onions for a rich, savoury filling that’s full of umami.",
-    ingredients: ["Shrimp", "Chicken", "Spring Onions"],
     price: 25.5,
     image: "/fillings/shrimp.png",
     color: "bg-blue-50",
@@ -19,10 +17,6 @@ const bestsellers = [
   },
   {
     id: 2,
-    name: "Cabbage",
-    description:
-      "A classic comfort favourite. Fresh cabbage mixed with fragrant spring onions and tender chicken, wrapped in a delicate skin. Light, juicy, and incredibly satisfying.",
-    ingredients: ["Cabbage", "Chicken", "Spring Onions"],
     price: 18.5,
     image: "/fillings/cabbage.png",
     color: "bg-gray-50",
@@ -30,10 +24,6 @@ const bestsellers = [
   },
   {
     id: 3,
-    name: "Mushroom",
-    description:
-      "Earthy, savoury, and deeply flavourful. A blend of mushrooms and black fungus mixed with chicken, perfect for mushroom lovers.",
-    ingredients: ["Mushroom", "Black Fungus", "Chicken"],
     price: 23.5,
     image: "/fillings/mushroom.png",
     color: "bg-red-50",
@@ -41,10 +31,6 @@ const bestsellers = [
   },
   {
     id: 4,
-    name: "Leek",
-    description:
-      "Simple, aromatic, and well-balanced. Fresh leeks paired with chicken for a clean, fragrant flavour that’s light yet satisfying.",
-    ingredients: ["Leek", "Chicken"],
     price: 18.5,
     image: "/fillings/leek.png",
     color: "bg-purple-50",
@@ -52,10 +38,6 @@ const bestsellers = [
   },
   {
     id: 5,
-    name: "Corn",
-    description:
-      "Naturally sweet and comforting. Fresh corn kernels combined with chicken for a soft, juicy filling with a subtle crunch in every bite.",
-    ingredients: ["Corn", "Chicken"],
     price: 18.5,
     image: "/fillings/corn.png",
     color: "bg-amber-50",
@@ -63,18 +45,37 @@ const bestsellers = [
   },
 ];
 
+const uiText = {
+  en: {
+    title: "Our Varieties",
+    subtitle: "These little guys are popular for a reason.",
+    addToCart: "Add to Cart",
+    pieces: "12 Pieces per pack",
+  },
+  bm: {
+    title: "Pilihan Kami",
+    subtitle: "Pilihan kegemaran ramai.",
+    addToCart: "Tambah ke Troli",
+    pieces: "12 Keping setiap pek",
+  },
+};
+
+
 export function MenuSection() {
   const { addToCart } = useCart();
+  const { language } = useLanguage();
+  const textLang = menuText[language];
+  const uiTextLang = uiText[language];
 
   return (
     <section id="menu" className="py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Our Varieties
+            {uiTextLang.title}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            These little guys are popular for a reason. Try the crowd favorites!
+            {uiTextLang.subtitle}
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
@@ -95,18 +96,19 @@ export function MenuSection() {
                 )}
                 <Image
                   src={item.image}
-                  alt={item.name}
+                  alt={textLang[item.id].name}
                   width={500}
                   height={500}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain scale-105"
                 />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {item.name}
+                {textLang[item.id].name}
               </h3>
-              <p className="text-gray-600">{item.description}</p>
+              <p className="text-gray-600">{textLang[item.id].description}</p>
               <div className="flex items-center gap-2 py-2">
-                {item.ingredients.map((ingredient) => (
+                {textLang[item.id].ingredients.map((ingredient) => (
                   <p
                     key={ingredient}
                     className="text-gray-800 bg-blue-100 rounded-full px-2 py-1 text-sm"
@@ -115,7 +117,7 @@ export function MenuSection() {
                   </p>
                 ))}
               </div>
-              <p className="text-gray-600 mb-6">12 Pieces per pack</p>
+              <p className="text-gray-600 mb-6">{uiTextLang.pieces}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xl font-bold text-orange-600">
                   RM {item.price.toFixed(2)}
@@ -125,13 +127,13 @@ export function MenuSection() {
                   onClick={() =>
                     addToCart({
                       id: item.id,
-                      name: item.name,
+                      name: textLang[item.id].name,
                       price: item.price,
                       image: item.image,
                     })
                   }
                 >
-                  Add to Cart
+                  {uiTextLang.addToCart}
                 </Button>
               </div>
             </motion.div>
@@ -151,18 +153,19 @@ export function MenuSection() {
               <div className="relative h-48 w-full mb-8 group-hover:scale-110 transition-transform duration-300">
                 <Image
                   src={item.image}
-                  alt={item.name}
+                  alt={textLang[item.id].name}
                   width={500}
                   height={500}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
                 />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {item.name}
+                {textLang[item.id].name}
               </h3>
-              <p className="text-gray-600">{item.description}</p>
+              <p className="text-gray-600">{textLang[item.id].description}</p>
               <div className="flex items-center gap-2 py-2">
-                {item.ingredients.map((ingredient) => (
+                {textLang[item.id].ingredients.map((ingredient) => (
                   <p
                     key={ingredient}
                     className="text-gray-800 bg-blue-100 rounded-full px-2 py-1 text-sm"
@@ -181,7 +184,7 @@ export function MenuSection() {
                   onClick={() =>
                     addToCart({
                       id: item.id,
-                      name: item.name,
+                      name: textLang[item.id].name,
                       price: item.price,
                       image: item.image,
                     })

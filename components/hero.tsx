@@ -57,6 +57,7 @@ export function Hero() {
             src="/full_steam.png"
             alt="Cute dumplings in a steamer"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="drop-shadow-2xl hover:scale-115 transition-transform duration-500 rounded-3xl scale-105 object-contain"
             priority
           />
