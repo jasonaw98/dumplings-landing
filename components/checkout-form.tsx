@@ -9,7 +9,7 @@ import { getReferralCode, clearStoredReferralCode } from "@/lib/referral";
 import { toast } from "sonner";
 
 export function CheckoutForm() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, finalTotalPrice, shippingFee } = useCart();
   const simpleItems = items.map((item) => `${item.name} x ${item.quantity}`);
   const [referralCode, setReferralCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,8 +33,6 @@ export function CheckoutForm() {
 
   async function submitOrder(formData: FormData) {
     const orderDetails = {
-      items: items,
-      totalPrice: totalPrice,
       fullName: formData.get("fullName")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       phone: formData.get("phone")?.toString() || "",
@@ -51,7 +49,7 @@ export function CheckoutForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: totalPrice,
+        amount: finalTotalPrice,
         mobile: orderDetails.phone,
         email: orderDetails.email,
         name: orderDetails.fullName,
@@ -59,8 +57,9 @@ export function CheckoutForm() {
         address: orderDetails.address,
         city: orderDetails.city,
         zip: orderDetails.zip,
-        items: orderDetails.items,
-        totalPrice: orderDetails.totalPrice,
+        items: items,
+        shippingFee: shippingFee,
+        totalPrice: finalTotalPrice,
         referralCode: refToSend ?? null,
       }),
     });
@@ -109,7 +108,9 @@ export function CheckoutForm() {
               pattern="^\+?60\d{8,10}$"
               title="Please enter a valid Malaysian phone number with country code, e.g. +60122345678 or 60122345678"
             />
-            <p className="text-xs text-gray-500">Format: +60122345678 or 60122345678</p>
+            <p className="text-xs text-gray-500">
+              Format: +60122345678 or 60122345678
+            </p>
           </div>
         </div>
       </div>
@@ -173,7 +174,8 @@ export function CheckoutForm() {
         <h3 className="text-xl font-bold text-gray-900">Referral</h3>
         <div className="grid gap-2">
           <Label htmlFor="referralCode" className="text-neutral-600">
-            Referral code <span className="text-gray-400 font-normal">(optional)</span>
+            Referral code{" "}
+            <span className="text-gray-400 font-normal">(optional)</span>
           </Label>
           <Input
             id="referralCode"

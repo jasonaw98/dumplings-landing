@@ -25,6 +25,7 @@ export interface Database {
           total_price: number;
           payment_status: PaymentStatus;
           referral_code: string | null;
+          shipping_fee: number;
           bill_url: string | null;
           created_at: string;
           updated_at: string;
@@ -42,6 +43,7 @@ export interface Database {
           total_price: number;
           payment_status?: PaymentStatus;
           referral_code?: string | null;
+          shipping_fee: number;
           bill_url?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -58,6 +60,7 @@ export interface Database {
           total_price?: number;
           payment_status?: PaymentStatus;
           referral_code?: string | null;
+          shipping_fee?: number;
           bill_url?: string | null;
           updated_at?: string;
         };

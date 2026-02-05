@@ -4,9 +4,9 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const { amount, email, name, mobile, origin, address, city, zip, items, totalPrice, referralCode } = await req.json();
+    const { amount, email, name, mobile, origin, address, city, zip, items, totalPrice, shippingFee, referralCode } = await req.json();
 
-    if (!amount || !email || !name || !mobile || !origin || !address || !city || !zip || !items || !totalPrice) {
+    if (!amount || !email || !name || !mobile || !origin || !address || !city || !zip || !items || !totalPrice || !shippingFee) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -61,6 +61,7 @@ export async function POST(req: Request) {
       items,
       bill_url: bill.url,
       total_price: parseFloat(totalPrice),
+      shipping_fee: parseFloat(shippingFee),
       payment_status: "pending",
       referral_code: referralCode?.trim() || null,
     });
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error creating bill:", error);
     return NextResponse.json(
-      { error: "Failed to create bill" },
+      { error: "Failed with " + error },
       { status: 401 }
     );
   }

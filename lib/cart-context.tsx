@@ -23,6 +23,8 @@ interface CartContextType {
   closeCart: () => void;
   clearCart: () => void;
   isInitialized: boolean;
+  shippingFee: number;
+  finalTotalPrice: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -92,6 +94,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     0,
   );
 
+  let shippingFee = 18;
+  if (totalItems >= 10) {
+    shippingFee = 0;
+  } else if (totalItems >= 6) {
+    shippingFee = 6;
+  } else if (totalItems >= 3) {
+    shippingFee = 10;
+  }
+
+  const finalTotalPrice = totalPrice + shippingFee;
+
   return (
     <CartContext.Provider
       value={{
@@ -107,6 +120,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         closeCart,
         clearCart,
         isInitialized,
+        shippingFee,
+        finalTotalPrice,
       }}
     >
       {children}

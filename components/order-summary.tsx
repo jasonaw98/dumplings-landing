@@ -4,9 +4,7 @@ import { useCart } from "@/lib/cart-context";
 import Image from "next/image";
 
 export function OrderSummary() {
-  const { items, totalPrice } = useCart();
-  const shipping = 5.0; // Flat rate shipping for now
-  const finalTotal = totalPrice + shipping;
+  const { items, totalPrice, shippingFee, finalTotalPrice } = useCart();
 
   return (
     <div className="bg-gray-50 p-8 rounded-3xl sticky top-24">
@@ -50,13 +48,24 @@ export function OrderSummary() {
           <span>RM {totalPrice.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
-          <span>Delivery</span>
-          <span>RM {shipping.toFixed(2)}</span>
+          <span>Delivery Fee</span>
+          <span>
+            {shippingFee === 0 ? "Free" : `RM ${shippingFee.toFixed(2)}`}
+          </span>
         </div>
         <div className="flex justify-between text-lg font-bold text-gray-900 pt-3 border-t border-gray-200">
           <span>Total</span>
-          <span className="text-orange-600">RM {finalTotal.toFixed(2)}</span>
+          <span className="text-orange-600">
+            RM {finalTotalPrice.toFixed(2)}
+          </span>
         </div>
+      </div>
+
+      <div className="bg-linear-to-br from-orange-400 to-orange-500 rounded-2xl shadow-lg p-5 text-white mt-6">
+        <h3 className="text-lg font-bold mb-2">Tips!</h3>
+        <p className="font-semibold">🧊 Storage: Keep frozen at -18°C</p>
+        <p className="font-semibold">🍳 Cooking methods: Steam, pan-fry, or boil</p>
+        <p className="font-semibold">✨ Best enjoyed: Crispy bottom or juicy steamed</p>
       </div>
     </div>
   );
