@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 import { render } from "@react-email/components";
 import { ConfirmationEmail } from "@/components/email/ConfirmationEmail";
-import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -84,26 +83,6 @@ export async function POST(req: Request) {
     };
 
     await transporter.sendMail(mailOptions);
-
-    if (supabaseAdmin) {
-      const { error: orderError } = await supabaseAdmin.from("orders").insert({
-        order_number: orderNumber,
-        full_name: fullName,
-        email,
-        phone: phone || null,
-        address,
-        city,
-        zip,
-        items,
-        total_price: parseFloat(totalPrice),
-        payment_status: "pending",
-        referral_code: referralCode,
-      });
-      if (orderError) {
-        console.error("Supabase order insert error:", orderError);
-        // Don't fail the request; email was sent
-      }
-    }
 
     return NextResponse.json(
       { message: "Email sent successfully" },
