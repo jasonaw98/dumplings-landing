@@ -48,6 +48,7 @@ export function FloatingDumplings() {
               top: `${index * 15 + 1}%`, // Distribute vertically
               y,
               rotate,
+              willChange: "transform",
             }}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1.5 }}
