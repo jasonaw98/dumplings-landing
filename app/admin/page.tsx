@@ -65,7 +65,13 @@ export default async function AdminPage() {
           <p className="text-red-400">Error loading data: {String(countError)}</p>
         )}
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+            <p className="text-sm text-zinc-400">Total orders</p>
+            <p className="text-2xl font-semibold">
+              {recentOrders.length}
+            </p>
+          </div>
           {counts &&
             STATUSES.map((status) => (
               <div
