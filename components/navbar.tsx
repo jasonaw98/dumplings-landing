@@ -26,19 +26,35 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="text-2xl font-bold text-orange-600 flex items-center gap-2"
+            className="text-md text-center md:text-2xl font-bold text-orange-600 flex items-center gap-2"
           >
             <img src="/logo.png" alt="Dumpling Bois" className="w-10 h-10" />{" "}
             Dumpling Bois
           </Link>
-          <div className="flex items-center gap-1">
-            <span className={cn(language === "en" ? "text-orange-500" : "text-gray-500", "font-semibold")}>EN</span>
+          <div className="flex items-center gap-1 text-sm md:text-base">
+            <span
+              className={cn(
+                language === "en" ? "text-orange-500" : "text-gray-500",
+                "font-semibold",
+              )}
+            >
+              EN
+            </span>
             <Switch
               checked={language === "bm"}
-              onCheckedChange={() => setLanguage(language === "bm" ? "en" : "bm")}
+              onCheckedChange={() =>
+                setLanguage(language === "bm" ? "en" : "bm")
+              }
               className="data-checked:bg-orange-500 data-unchecked:bg-gray-200"
             />
-            <span className={cn(language === "bm" ? "text-orange-500" : "text-gray-500", "font-semibold")}>BM</span>
+            <span
+              className={cn(
+                language === "bm" ? "text-orange-500" : "text-gray-500",
+                "font-semibold",
+              )}
+            >
+              BM
+            </span>
           </div>
         </div>
 
