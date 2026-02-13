@@ -59,7 +59,10 @@ export function OrderSummary() {
           <div className="space-y-1">
             <div className="flex justify-between">
               <span>1-2 boxes</span>
-              <span>RM 18.00</span>
+              <div className="flex gap-2">
+                <span className="line-through">RM 18.00</span>
+                <span>RM 14.00</span>
+              </div>
             </div>
             <div className="flex justify-between">
               <span>3-5 boxes</span>

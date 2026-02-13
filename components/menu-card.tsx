@@ -8,7 +8,8 @@ import { useCart } from "@/lib/cart-context";
 interface MenuCardProps {
   item: {
     id: number;
-    price: number;
+    new_price: number;
+    old_price: number;
     image: string;
     color: string;
     popular?: boolean;
@@ -71,16 +72,19 @@ export function MenuCard({
       </div>
       <p className="text-gray-600 mb-6">{translations.pieces}</p>
       <div className="flex items-center justify-between mt-auto">
-        <span className="text-xl font-bold text-orange-600">
-          RM {item.price.toFixed(2)}
-        </span>
+        <div className="flex gap-2">
+          <span className="text-xl font-bold text-orange-600">
+            RM {item.new_price.toFixed(2)}
+          </span>
+          <span className="line-through">RM {item.old_price.toFixed(2)}</span>
+        </div>
         <Button
           className="bg-gray-900 text-white rounded-full hover:bg-orange-500 transition-colors"
           onClick={() =>
             addToCart({
               id: item.id,
               name: translations.name,
-              price: item.price,
+              price: item.new_price,
               image: item.image,
             })
           }
