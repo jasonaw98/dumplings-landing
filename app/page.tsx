@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/about-section";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
+import { HowToSection } from "@/components/how-to-section";
 import { MenuSection } from "@/components/menu-section";
 import { Navbar } from "@/components/navbar";
 import { FloatingDumplings } from "@/components/floating-dumplings";
@@ -14,6 +15,7 @@ export default function Home() {
         <Navbar />
         <Hero />
         <MenuSection />
+        <HowToSection />
         <AboutSection />
         <LocationsSection />
         <Footer />
