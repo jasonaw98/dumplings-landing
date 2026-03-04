@@ -32,6 +32,7 @@ export default function RootLayout({
         src="https://umami-jason.vercel.app/script.js"
         data-website-id="0e4ed64e-66bc-4488-be07-70d07b4e7b2c"
       />
+      <Script src="/redirect.js" />
       <body className={`${outfit.className} antialiased`}>
         <Suspense fallback={null}>
           <ReferralCapture />
