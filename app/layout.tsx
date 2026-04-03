@@ -8,6 +8,7 @@ import { CartSidebar } from "@/components/cart-sidebar";
 import { ReferralCapture } from "@/components/referral-capture";
 import { Toaster } from "@/components/ui/sonner"
 import { LanguageProvider } from "@/lib/language-context";
+import { Navbar } from "@/components/navbar";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
         </Suspense>
         <CartProvider>
           <LanguageProvider>
+            <Navbar />
             {children}
           </LanguageProvider>
           <Toaster position="top-center" richColors />

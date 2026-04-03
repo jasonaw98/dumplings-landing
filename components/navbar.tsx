@@ -61,19 +61,19 @@ export function Navbar() {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 font-medium text-gray-700">
           <Link
-            href="#menu"
+            href="/#menu"
             className="hover:text-orange-500 transition-colors"
           >
             Menu
           </Link>
           <Link
-            href="#story"
+            href="/#story"
             className="hover:text-orange-500 transition-colors"
           >
             Our Story
           </Link>
           <Link
-            href="#locations"
+            href="/#locations"
             className="hover:text-orange-500 transition-colors"
           >
             Locations
@@ -114,21 +114,21 @@ export function Navbar() {
         >
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4 font-medium text-gray-700">
             <Link
-              href="#menu"
+              href="/#menu"
               className="hover:text-orange-500 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >
               Menu
             </Link>
             <Link
-              href="#story"
+              href="/#story"
               className="hover:text-orange-500 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >
               Our Story
             </Link>
             <Link
-              href="#locations"
+              href="/#locations"
               className="hover:text-orange-500 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >

@@ -18,6 +18,12 @@ const locations = [
     hours: "Mon-Sat: 11am - 10pm",
     googlemap: "https://maps.app.goo.gl/i759h81BRjdWF5aF8",
   },
+  {
+    name: "Makan Avenue Food Court",
+    address: "26, Jalan Kampung Hulu, 75200 Melaka",
+    hours: "Mon-Sun: 12pm - 10pm",
+    googlemap: "https://maps.app.goo.gl/VbfkCUfLvNkUpsMCA",
+  },
 ];
 
 export function LocationsSection() {
@@ -31,7 +37,7 @@ export function LocationsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {locations.map((loc, index) => (
             <motion.div
               key={index}
