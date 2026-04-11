@@ -8,7 +8,6 @@ import { CartSidebar } from "@/components/cart-sidebar";
 import { ReferralCapture } from "@/components/referral-capture";
 import { Toaster } from "@/components/ui/sonner"
 import { LanguageProvider } from "@/lib/language-context";
-import { Navbar } from "@/components/navbar";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -16,8 +15,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Dumpling Bois | Not Your Grandma's Bao",
-  description: "Modern, cute, and delicious dumplings crafted with love.",
+  title: "Dumpling Bois | Good Fillings ",
+  description: "Good Fillings | Good Folds | Good Bois",
 };
 
 
@@ -40,7 +39,6 @@ export default function RootLayout({
         </Suspense>
         <CartProvider>
           <LanguageProvider>
-            <Navbar />
             {children}
           </LanguageProvider>
           <Toaster position="top-center" richColors />

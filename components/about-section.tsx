@@ -50,7 +50,7 @@ function Story() {
         </h2>
         <p className="text-lg text-gray-600 mb-6 leading-relaxed">
           Dumpling Bois started with a simple mission – serve great, high
-          quality, pork-free dumplings that everyone can enjoy.
+          quality, muslim friendly dumplings that everyone can enjoy.
         </p>
         <p className="text-lg text-gray-600 mb-6 leading-relaxed">
           As we expanded to 3 locations, and now our online store, one thing has
@@ -97,7 +97,7 @@ function Diff() {
           <ul className="list-disc list-inside">
             <li>Fresh ingredients prepared daily.</li>
             <li>Consistent & balanced seasoning – not overpowering</li>
-            <li>Generous fillings without excess oil</li>
+            <li>Naturally coloured with five types of vegetables</li>
             <li>No compromise on standards.</li>
           </ul>
         </div>
