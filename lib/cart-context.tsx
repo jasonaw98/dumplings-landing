@@ -102,7 +102,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       0,
     );
 
-    let shippingFee = 18;
+    let shippingFee = 14;
     if (totalItems >= 10) {
       shippingFee = 0;
     } else if (totalItems >= 6) {
