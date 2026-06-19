@@ -6,7 +6,7 @@ const supabaseServiceRoleKey = process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!;
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
   console.warn(
-    "Supabase env missing: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set for order tracking."
+    "Supabase env missing: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set for order tracking.",
   );
 }
 

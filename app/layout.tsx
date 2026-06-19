@@ -6,7 +6,7 @@ import Script from "next/script";
 import { CartProvider } from "@/lib/cart-context";
 import { CartSidebar } from "@/components/cart-sidebar";
 import { ReferralCapture } from "@/components/referral-capture";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/lib/language-context";
 
 const outfit = Outfit({
@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   title: "Dumpling Bois | Good Fillings ",
   description: "Good Fillings | Good Folds | Good Bois",
 };
-
 
 export default function RootLayout({
   children,
@@ -38,9 +37,7 @@ export default function RootLayout({
           <ReferralCapture />
         </Suspense>
         <CartProvider>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
+          <LanguageProvider>{children}</LanguageProvider>
           <Toaster position="top-center" richColors />
           <CartSidebar />
         </CartProvider>

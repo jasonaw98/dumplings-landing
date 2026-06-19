@@ -43,7 +43,9 @@ export function CheckoutForm() {
     };
     sessionStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
-    const refToSend = (formData.get("referralCode")?.toString() ?? referralCode)?.trim() || undefined;
+    const refToSend =
+      (formData.get("referralCode")?.toString() ?? referralCode)?.trim() ||
+      undefined;
 
     const res = await fetch("/api/payments/create", {
       method: "POST",

@@ -8,14 +8,14 @@ export async function GET(req: Request) {
   if (!orderNumber?.trim()) {
     return NextResponse.json(
       { error: "Missing order_number or ref" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Server not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -27,10 +27,7 @@ export async function GET(req: Request) {
     .single();
 
   if (error || !data) {
-    return NextResponse.json(
-      { error: "Order not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
 
   return NextResponse.json(data);

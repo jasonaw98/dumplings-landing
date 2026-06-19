@@ -19,14 +19,14 @@ export async function POST(req: Request) {
 
     const { x_signature, ...paramsWithoutSignature } = data;
 
-    const isValidSignature = verifyBillplzSignature(paramsWithoutSignature, x_signature);
+    const isValidSignature = verifyBillplzSignature(
+      paramsWithoutSignature,
+      x_signature,
+    );
 
     if (!isValidSignature) {
       console.error("Invalid signature detected");
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 200 }
-      );
+      return NextResponse.json({ error: "Invalid signature" }, { status: 200 });
     }
 
     console.log("Signature verified successfully ✅");
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       if (!supabaseAdmin) {
         return NextResponse.json(
           { error: "Supabase not configured" },
-          { status: 503 }
+          { status: 503 },
         );
       }
 
@@ -53,16 +53,21 @@ export async function POST(req: Request) {
         .single();
       const order = data as OrderRow | null;
 
-      const { error: orderError } = await supabaseAdmin.from("orders").update({
-        payment_status: "verified",
-      }).eq("bill_url", billUrl);
+      const { error: orderError } = await supabaseAdmin
+        .from("orders")
+        .update({
+          payment_status: "verified",
+        })
+        .eq("bill_url", billUrl);
       if (orderError) {
         console.error("Supabase order update error:", orderError);
       }
 
       if (order && !fetchError) {
         const orderDate = order.created_at
-          ? new Date(order.created_at).toLocaleDateString("en-MY", { dateStyle: "long" })
+          ? new Date(order.created_at).toLocaleDateString("en-MY", {
+              dateStyle: "long",
+            })
           : new Date().toLocaleDateString("en-MY", { dateStyle: "long" });
 
         const transporter = nodemailer.createTransport({
@@ -87,9 +92,12 @@ export async function POST(req: Request) {
             orderDate,
             items: order.items ?? [],
             totalPrice: Number(order.total_price),
-            baseUrl: process.env.NEXT_PUBLIC_SITE_URL ||
-              (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
-          })
+            baseUrl:
+              process.env.NEXT_PUBLIC_SITE_URL ||
+              (process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : undefined),
+          }),
         );
 
         const mailOptions = {
@@ -103,7 +111,10 @@ export async function POST(req: Request) {
           console.error("Failed to send confirmation email:", err);
         });
       } else {
-        console.warn("Order not found for bill_url, skipping confirmation email. Bill id:", paramsWithoutSignature.id);
+        console.warn(
+          "Order not found for bill_url, skipping confirmation email. Bill id:",
+          paramsWithoutSignature.id,
+        );
       }
 
       return NextResponse.json({
@@ -143,21 +154,29 @@ export async function POST(req: Request) {
             orderNumber: order.order_number,
             amount: Number(order.total_price).toFixed(2),
             billUrl,
-            baseUrl: process.env.NEXT_PUBLIC_SITE_URL ||
-              (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
-          })
+            baseUrl:
+              process.env.NEXT_PUBLIC_SITE_URL ||
+              (process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : undefined),
+          }),
         );
 
-        await transporter.sendMail({
-          from: `Dumpling Bois <${process.env.SMTP_USER}>`,
-          to: order.email,
-          subject: `Complete your Dumpling Bois order ${order.order_number}`,
-          html: emailHtml,
-        }).catch((err) => {
-          console.error("Failed to send payment-failed email:", err);
-        });
+        await transporter
+          .sendMail({
+            from: `Dumpling Bois <${process.env.SMTP_USER}>`,
+            to: order.email,
+            subject: `Complete your Dumpling Bois order ${order.order_number}`,
+            html: emailHtml,
+          })
+          .catch((err) => {
+            console.error("Failed to send payment-failed email:", err);
+          });
       } else if (!order) {
-        console.warn("Order not found for bill_url, skipping payment-failed email. Bill id:", paramsWithoutSignature.id);
+        console.warn(
+          "Order not found for bill_url, skipping payment-failed email. Bill id:",
+          paramsWithoutSignature.id,
+        );
       }
 
       return NextResponse.json({
@@ -171,27 +190,29 @@ export async function POST(req: Request) {
       return NextResponse.json({
         success: false,
         message: "Unknown transaction status",
-        state: state
+        state: state,
       });
     }
-
   } catch (error) {
     console.error("Error processing webhook:", error);
     return NextResponse.json(
       { error: "Failed to process webhook" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-export function verifyBillplzSignature(params: Record<string, string>, receivedSignature: string): boolean {
+export function verifyBillplzSignature(
+  params: Record<string, string>,
+  receivedSignature: string,
+): boolean {
   try {
     // Step 1: Construct key+value strings for all parameters
     const keyValueStrings: string[] = [];
 
     for (const [key, value] of Object.entries(params)) {
       // Skip x_signature if it's somehow in params
-      if (key === 'x_signature') continue;
+      if (key === "x_signature") continue;
 
       // Use empty string for null/undefined
       const cleanValue = value || "";
@@ -200,7 +221,7 @@ export function verifyBillplzSignature(params: Record<string, string>, receivedS
 
     // Step 2: Sort the concatenated strings (case-insensitive as per documentation)
     const sortedKeyValueStrings = keyValueStrings.sort((a, b) =>
-      a.toLowerCase().localeCompare(b.toLowerCase())
+      a.toLowerCase().localeCompare(b.toLowerCase()),
     );
 
     // Step 3: Combine with "|" separator
@@ -217,10 +238,9 @@ export function verifyBillplzSignature(params: Record<string, string>, receivedS
 
     // Step 5: Compare signatures (use constant-time comparison for security)
     return crypto.timingSafeEqual(
-      Buffer.from(computedSignature, 'hex'),
-      Buffer.from(receivedSignature, 'hex')
+      Buffer.from(computedSignature, "hex"),
+      Buffer.from(receivedSignature, "hex"),
     );
-
   } catch (error) {
     console.error("Error verifying signature:", error);
     return false;

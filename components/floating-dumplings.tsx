@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import {
+  type MotionValue,
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 
@@ -13,6 +19,58 @@ const dumplings = [
   { src: "/dumpling-2-nobg.png", size: 100, x: "90%", delay: 3.5 },
   { src: "/dumpling-1-nobg.png", size: 100, x: "15%", delay: 4.5 },
 ];
+
+type DumplingItem = (typeof dumplings)[number];
+
+function FloatingDumpling({
+  item,
+  index,
+  smoothProgress,
+}: {
+  item: DumplingItem;
+  index: number;
+  smoothProgress: MotionValue<number>;
+}) {
+  const yRange = [(index + 1) * 100, (index + 1) * -400];
+  const rotateRange = [0, 360 * (index % 2 === 0 ? 1 : -1)];
+
+  const y = useTransform(smoothProgress, [0, 1], yRange);
+  const rotate = useTransform(smoothProgress, [0, 1], rotateRange);
+
+  return (
+    <motion.div
+      className={index === 0 ? "hidden md:block" : ""}
+      style={{
+        position: "absolute",
+        left: item.x,
+        top: `${index * 15 + 1}%`,
+        y,
+        rotate,
+        willChange: "transform",
+      }}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1.5 }}
+      transition={{ duration: 1, delay: item.delay }}
+    >
+      <div
+        style={{
+          width: item.size,
+          height: item.size,
+          position: "relative",
+        }}
+      >
+        <Image
+          src={item.src}
+          alt="Floating dumpling"
+          loading="eager"
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-contain drop-shadow-lg rounded-2xl"
+        />
+      </div>
+    </motion.div>
+  );
+}
 
 export function FloatingDumplings() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,52 +85,16 @@ export function FloatingDumplings() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 overflow-hidden pointer-events-none z-40 h-full w-full"
+      className="absolute inset-0 overflow-hidden pointer-events-none z-40 h-full w-full hidden md:block"
     >
-      {dumplings.map((item, index) => {
-        // Different movement speeds for parallax effect
-        // Some move faster (larger range), some slower
-        const yRange = [(index + 1) * 100, (index + 1) * -400];
-        const rotateRange = [0, 360 * (index % 2 === 0 ? 1 : -1)]; // Some roll right, some left
-
-        const y = useTransform(smoothProgress, [0, 1], yRange);
-        const rotate = useTransform(smoothProgress, [0, 1], rotateRange);
-
-        return (
-          <motion.div
-            key={index}
-            className={index === 0 ? "hidden md:block" : ""}
-            style={{
-              position: "absolute",
-              left: item.x,
-              top: `${index * 15 + 1}%`, // Distribute vertically
-              y,
-              rotate,
-              willChange: "transform",
-            }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1.5 }}
-            transition={{ duration: 1, delay: item.delay }}
-          >
-            <div
-              style={{
-                width: item.size,
-                height: item.size,
-                position: "relative",
-              }}
-            >
-              <Image
-                src={item.src}
-                alt="Floating dumpling"
-                loading="eager"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain drop-shadow-lg rounded-2xl"
-              />
-            </div>
-          </motion.div>
-        );
-      })}
+      {dumplings.map((item, index) => (
+        <FloatingDumpling
+          key={`${item.src}-${item.x}-${item.delay}`}
+          item={item}
+          index={index}
+          smoothProgress={smoothProgress}
+        />
+      ))}
     </div>
   );
 }

@@ -17,18 +17,18 @@ function DumplingCounter() {
     const updateCount = () => {
       const elapsed = Date.now() - START_DATE;
       setTargetCount(
-        Math.floor(elapsed * (DUMPLINGS_PER_MONTH / MS_PER_MONTH))
+        Math.floor(elapsed * (DUMPLINGS_PER_MONTH / MS_PER_MONTH)),
       );
     };
 
     updateCount();
     const interval = setInterval(updateCount, 60000); // Check every minute
     return () => clearInterval(interval);
-  }, []);
+  }, [START_DATE]);
 
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) =>
-    Math.round(latest).toLocaleString()
+    Math.round(latest).toLocaleString(),
   );
 
   useEffect(() => {

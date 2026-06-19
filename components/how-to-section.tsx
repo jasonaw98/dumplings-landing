@@ -1,7 +1,7 @@
 "use client";
 
-import { useLanguage } from "@/lib/language-context";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/language-context";
 
 const uiText = {
   en: {
@@ -22,7 +22,9 @@ export function HowToSection() {
     <section id="how" className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">{text.title}</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            {text.title}
+          </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{text.subtitle}</p>
         </div>
         <motion.div

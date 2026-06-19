@@ -19,11 +19,17 @@ export async function POST(req: Request) {
   if (!email || !fullName || !address || !city || !zip || !totalPrice) {
     return NextResponse.json(
       { error: "Missing required fields" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  let items: { id: number; name: string; price: number; image: string; quantity: number }[] = [];
+  let items: {
+    id: number;
+    name: string;
+    price: number;
+    image: string;
+    quantity: number;
+  }[] = [];
   if (itemsJson) {
     try {
       items = JSON.parse(itemsJson);
@@ -45,7 +51,9 @@ export async function POST(req: Request) {
   }
 
   const orderNumber = `${Date.now().toString().slice(-8)}`;
-  const orderDate = new Date().toLocaleDateString("en-MY", { dateStyle: "long" });
+  const orderDate = new Date().toLocaleDateString("en-MY", {
+    dateStyle: "long",
+  });
 
   try {
     const transporter = nodemailer.createTransport({
@@ -70,9 +78,12 @@ export async function POST(req: Request) {
         orderDate,
         items,
         totalPrice: parseFloat(totalPrice),
-        baseUrl: process.env.NEXT_PUBLIC_SITE_URL ||
-          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
-      })
+        baseUrl:
+          process.env.NEXT_PUBLIC_SITE_URL ||
+          (process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : undefined),
+      }),
     );
 
     const mailOptions = {

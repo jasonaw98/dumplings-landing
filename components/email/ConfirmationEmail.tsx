@@ -136,34 +136,35 @@ export const ConfirmationEmail = ({
               <Text className="m-0 mb-4 text-base font-bold text-[#111827]">
                 Order Summary
               </Text>
-              {items && items.map((item) => (
-                <Row key={item.id} className="mb-4">
-                  <Column className="align-top" width="80">
-                    <Img
-                      src={
-                        item.image.startsWith("http")
-                          ? item.image
-                          : `${baseUrl}${item.image}`
-                      }
-                      alt={item.name}
-                      width="72"
-                      height="72"
-                      className="rounded-lg bg-white border border-[#ffedd5]"
-                    />
-                  </Column>
-                  <Column className="pl-4 align-top">
-                    <Text className="m-0 text-[15px] font-semibold text-[#111827]">
-                      {item.name}
-                    </Text>
-                    <Text className="m-0 text-[14px] text-[#6b7280]">
-                      Qty: {item.quantity} × RM {item.price.toFixed(2)}
-                    </Text>
-                    <Text className="m-0 mt-1 text-[14px] font-semibold text-[#ea580c]">
-                      RM {(item.price * item.quantity).toFixed(2)}
-                    </Text>
-                  </Column>
-                </Row>
-              ))}
+              {items &&
+                items.map((item) => (
+                  <Row key={item.id} className="mb-4">
+                    <Column className="align-top" width="80">
+                      <Img
+                        src={
+                          item.image.startsWith("http")
+                            ? item.image
+                            : `${baseUrl}${item.image}`
+                        }
+                        alt={item.name}
+                        width="72"
+                        height="72"
+                        className="rounded-lg bg-white border border-[#ffedd5]"
+                      />
+                    </Column>
+                    <Column className="pl-4 align-top">
+                      <Text className="m-0 text-[15px] font-semibold text-[#111827]">
+                        {item.name}
+                      </Text>
+                      <Text className="m-0 text-[14px] text-[#6b7280]">
+                        Qty: {item.quantity} × RM {item.price.toFixed(2)}
+                      </Text>
+                      <Text className="m-0 mt-1 text-[14px] font-semibold text-[#ea580c]">
+                        RM {(item.price * item.quantity).toFixed(2)}
+                      </Text>
+                    </Column>
+                  </Row>
+                ))}
               <Hr className="border-[#ffedd5] my-4" />
               <Row>
                 <Column>

@@ -139,8 +139,8 @@ function Perfect() {
           <br /> No matter the occasion.
         </h2>
         <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-          Whether you are fixing a quick lunch, family dinner, or stocking
-          up your freezer. <br/>
+          Whether you are fixing a quick lunch, family dinner, or stocking up
+          your freezer. <br />
           Best served hot *chef kiss*
         </p>
       </motion.div>

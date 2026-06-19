@@ -1,4 +1,3 @@
-
 const STORAGE_KEY = "dumpling_referral_code";
 const COOKIE_NAME = "dumpling_ref";
 const COOKIE_DAYS = 30;

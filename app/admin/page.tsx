@@ -137,7 +137,7 @@ export default async function AdminPage() {
                       <td className="p-3 text-right">
                         {o.items.map((item) => (
                           <div key={item.id} className="flex gap-1">
-                            <p>{item.name}</p> 
+                            <p>{item.name}</p>
                             <p>x</p>
                             <p className="font-bold">{item.quantity}</p>
                           </div>

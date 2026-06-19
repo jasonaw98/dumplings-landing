@@ -8,14 +8,14 @@ export async function GET(req: Request) {
   if (!orderNumber?.trim()) {
     return NextResponse.json(
       { error: "Missing order_number" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Server not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     if (error || !order) {
       return NextResponse.json(
         { paid: false, order_number: orderNumber },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function GET(req: Request) {
     console.error("Error checking payment status:", err);
     return NextResponse.json(
       { error: "Could not verify payment status" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

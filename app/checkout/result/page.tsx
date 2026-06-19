@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 
 function CheckoutResultContent() {
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<"loading" | "success" | "fail" | "error">("loading");
+  const [status, setStatus] = useState<
+    "loading" | "success" | "fail" | "error"
+  >("loading");
 
   useEffect(() => {
     const orderNumber = searchParams.get("order_number");
@@ -19,12 +21,16 @@ function CheckoutResultContent() {
       const maxAttempts = 4;
       const delayMs = 1500;
 
-      fetch(`/api/payments/status?order_number=${encodeURIComponent(orderNumber)}`)
+      fetch(
+        `/api/payments/status?order_number=${encodeURIComponent(orderNumber)}`,
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data.paid) {
             setStatus("success");
-            window.location.replace(`/checkout/success?order_number=${encodeURIComponent(orderNumber)}`);
+            window.location.replace(
+              `/checkout/success?order_number=${encodeURIComponent(orderNumber)}`,
+            );
             return;
           }
           if (attempt < maxAttempts - 1) {
@@ -57,7 +63,9 @@ function CheckoutResultContent() {
           </>
         )}
         {status === "error" && (
-          <p className="text-gray-600">Could not verify payment. Redirecting...</p>
+          <p className="text-gray-600">
+            Could not verify payment. Redirecting...
+          </p>
         )}
       </div>
     </div>

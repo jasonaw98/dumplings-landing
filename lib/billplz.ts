@@ -1,11 +1,8 @@
-'use server'
+"use server";
 const API_KEY = process.env.BILLPLZ_API_KEY!;
 const BASE_URL = process.env.BILLPLZ_BASE_URL!;
 
-export async function billplzFetch(
-  path: string,
-  options: RequestInit = {}
-) {
+export async function billplzFetch(path: string, options: RequestInit = {}) {
   const auth = Buffer.from(`${API_KEY}:`).toString("base64");
 
   const res = await fetch(`${BASE_URL}${path}`, {

@@ -38,15 +38,25 @@ function CheckoutSuccessContent() {
         })
         .then((order) => {
           setOrderDetails({
-            items: (order.items ?? []).map((item: { id: number; name: string; price: number; quantity: number; image?: string }) => ({
-              ...item,
-              image: item.image ?? "",
-            })),
+            items: (order.items ?? []).map(
+              (item: {
+                id: number;
+                name: string;
+                price: number;
+                quantity: number;
+                image?: string;
+              }) => ({
+                ...item,
+                image: item.image ?? "",
+              }),
+            ),
             totalPrice: Number(order.total_price),
             fullName: order.full_name,
             email: order.email,
             orderDate: order.created_at
-              ? new Date(order.created_at).toLocaleDateString("en-MY", { dateStyle: "long" })
+              ? new Date(order.created_at).toLocaleDateString("en-MY", {
+                  dateStyle: "long",
+                })
               : new Date().toLocaleDateString("en-MY", { dateStyle: "long" }),
             orderNumber: order.order_number,
           });
@@ -81,7 +91,9 @@ function CheckoutSuccessContent() {
         <div className="text-center">
           <p className="text-gray-600 mb-4">We couldn’t load this order.</p>
           <Link href="/">
-            <Button className="bg-orange-500 hover:bg-orange-600">Back to Home</Button>
+            <Button className="bg-orange-500 hover:bg-orange-600">
+              Back to Home
+            </Button>
           </Link>
         </div>
       </div>
@@ -124,7 +136,8 @@ function CheckoutSuccessContent() {
             Thank you for your order, {orderDetails.fullName}!
           </p>
           <p className="text-sm text-gray-500">
-            Order Number: <span className="font-semibold">{orderDetails.orderNumber}</span>
+            Order Number:{" "}
+            <span className="font-semibold">{orderDetails.orderNumber}</span>
           </p>
         </motion.div>
 
